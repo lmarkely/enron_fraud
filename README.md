@@ -255,3 +255,36 @@ Output:
 CV Recall Score of Linear SVC: 0.105 +/- 0.145
 Complete in 31.3 sec
 ```
+
+### Kernel SVC
+The nested cross validation for Kernel SVC is
+performed as follows.
+```
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+#Kernel SVC
+scores=[]
+clf_ksvc = SVC(kernel='rbf')
+pipe_ksvc = Pipeline([['sc',StandardScaler()],
+                      ['clf',clf_ksvc]])
+params_ksvc = {'clf__C':10.0**np.arange(-4,4),'clf__gamma':10.0**np.arange(-4,4)}
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ksvc = GridSearchCV(estimator=pipe_ksvc,param_grid=params_ksvc,
+                               cv=k_fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_ksvc,X,y,cv=k_fold_outer,
+                                      scoring='recall'))
+print ('CV Recall Score of Kernel SVC: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+```
+Output:
+```
+CV Recall Score of Kernel SVC: 0.161 +/- 0.221
+Complete in 254.7 sec
+```
