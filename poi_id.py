@@ -233,6 +233,21 @@ print ('CV Recall Score of Kernel SVC: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 
+#Naive Bayes
+N_outer = 5
+scores=[]
+clf_nb = GaussianNB()
+pipe_nb = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_nb]])
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    scores.append(cross_val_score(pipe_nb,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
+                                                               np.std(scores))
+print 'Complete in %.1f sec' %(time()-t0)
+
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and

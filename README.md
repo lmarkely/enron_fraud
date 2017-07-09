@@ -124,7 +124,8 @@ The following algorithms from scikit-learn will be evaluated.
 3. K-Nearest Neighbors Classifier
 4. Linear Support Vector Classifier
 5. Kernel Support Vector Classifier
-6. Multi-Layer Perceptron Classifier
+6. Naive Bayes
+7. Multi-Layer Perceptron Classifier
 
 ### Logistic Regression
 The nested cross validation for Logistic Regression is performed as follows.
@@ -287,4 +288,31 @@ Output:
 ```
 CV Recall Score of Kernel SVC: 0.161 +/- 0.221
 Complete in 254.7 sec
+```
+
+### Naive Bayes
+As there is no regularization parameter for Naive Bayes, we will simply use
+cross validation.
+```
+#Set the number of repeats of the cross validation
+N_outer = 5
+
+#Naive Bayes
+scores=[]
+clf_nb = GaussianNB()
+pipe_nb = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_nb]])
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    scores.append(cross_val_score(pipe_nb,X,y,cv=k_fold_outer,
+                                      scoring='recall'))
+print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
+                                                               np.std(scores))
+print 'Complete in %.1f sec' %(time()-t0)
+```
+Output:
+```
+CV Recall Score of Logistic Regression: 0.902 +/- 0.160
+Complete in 0.1 sec
 ```
