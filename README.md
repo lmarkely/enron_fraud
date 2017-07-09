@@ -83,4 +83,6 @@ collinear. In other words, some of the features are correlated with each other.
 This correlation should be avoided for LDA because it implies redundancy and
 confuses the interpretation of the  LDA coefficients. More detailed explanation
 can be found [here](https://stats.stackexchange.com/questions/29385/collinear-variables-in-multiclass-lda-training). This correlation is confirmed by the following scatterplot
-matrix.
+matrix (Fig. 1)
+
+![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%201.png)
