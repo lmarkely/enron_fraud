@@ -86,3 +86,15 @@ can be found [here](https://stats.stackexchange.com/questions/29385/collinear-va
 matrix (Fig. 1)
 
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%201.png)
+
+This plot is generated using [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html).
+```
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.DataFrame(X_std)
+pg = sns.PairGrid(df)
+pg.map_diag(plt.hist)
+pg.map_offdiag(plt.scatter)
+plt.show()
+```
