@@ -112,7 +112,8 @@ print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
 ### function. Because of the small size of the dataset, the script uses
 ### stratified shuffle split cross validation. For more info:
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
-
+clf_labels = \
+['Logistic Regression','KNN','Random Forest','SVC','Kernel SVC','MLP']
 
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
