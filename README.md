@@ -76,20 +76,6 @@ steps.
 
 **Figure 1.** Pairplot of all features of Enron dataset.
 
-Furthermore, PCA
-
-```
-X_std = StandardScaler().fit_transform(X)
-pca = PCA(n_components=15)
-X_pca = pca.fit_transform(X_std)
-print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
-```
-
-Output:
-```
-PCA explained_variance_ratio_ [ 0.77628412  0.07772042]
-```
-
 This plot is generated using [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html).
 ```
 import seaborn as sns
@@ -100,4 +86,21 @@ pg = sns.PairGrid(df)
 pg.map_diag(plt.hist)
 pg.map_offdiag(plt.scatter)
 plt.show()
+```
+
+Furthermore, PCA with `n_components=15` shows that to capture ~90% variance, we
+need to keep the first 8 features.  
+
+```
+X_std = StandardScaler().fit_transform(X)
+pca = PCA(n_components=15)
+X_pca = pca.fit_transform(X_std)
+print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
+```
+
+Output:
+```
+PCA explained_variance_ratio_ [ 0.34010581  0.12119602  0.104491    0.08764263  0.06768687  0.05239806
+  0.0467082   0.04564431  0.03765439  0.03034863  0.02354492  0.01881022
+  0.01624238  0.00752657  0.        ]
 ```
