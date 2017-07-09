@@ -218,8 +218,8 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of Logistic Regression: 0.240 +/- 0.204 %
-Complete in 31.9 sec
+CV F1 Score of Logistic Regression: 0.240 +/- 0.204
+Complete in 32.3 sec
 ```
 
 ### Random Forest Classifier
@@ -251,6 +251,6 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of Random Forest Classifier: 0.170 +/- 0.231 %
-Complete in 183.6 sec
+CV F1 Score of Random Forest Classifier: 0.170 +/- 0.231
+Complete in 183.9 sec
 ```
