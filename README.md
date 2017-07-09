@@ -122,8 +122,6 @@ The following algorithms from scikit-learn will be evaluated.
 1. Logistic Regression
 2. Random Forest Classifier
 3. K-Nearest Neighbors Classifier
-4. Support Vector Classifier
-5. Multi-Layer Perceptron Classifier
-
-We will use pipeline consisting of StandardScaler and each of the above
-algorithms in the algorithm selection and model selection.
+4. Linear Support Vector Classifier
+5. Kernel Support Vector Classifier
+6. Multi-Layer Perceptron Classifier
