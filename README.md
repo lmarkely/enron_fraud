@@ -31,5 +31,22 @@ and model selection.
 ## Feature Selection and Engineering
 First, all features are included except 'to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi'.
 Furthermore, 'std_from_poi' and 'std_to_poi' are standardized features derived
-from 'from_poi_to_this_person'/'from_messages' and
-'from_this_person_to_poi'/'to_messages'.
+as follows.
+
+```
+for key in data_dict:
+    if (type(data_dict[key]['from_poi_to_this_person']) == int and
+        type(data_dict[key]['from_messages']) == int):
+        data_dict[key]['std_from_poi'] = \
+        (data_dict[key]['from_poi_to_this_person']/
+         data_dict[key]['from_messages'])
+    else:
+        data_dict[key]['std_from_poi'] = 0
+    if (type(data_dict[key]['from_this_person_to_poi']) == int and
+        type(data_dict[key]['to_messages']) == int):
+        data_dict[key]['std_to_poi'] = \
+        (data_dict[key]['from_this_person_to_poi']/
+         data_dict[key]['to_messages'])
+    else:
+        data_dict[key]['std_to_poi'] = 0
+```
