@@ -17,6 +17,11 @@ with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
 
 ### Task 2: Remove outliers
+### First, explore the dataset.
+### Identify the total number of data points.
+print 'Total number of data points:',len(data_dict)
+
+
 ### Task 3: Create new feature(s)
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
@@ -32,14 +37,41 @@ labels, features = targetFeatureSplit(data)
 ### http://scikit-learn.org/stable/modules/pipeline.html
 
 # Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.naive_bayes import GaussianNB
-clf = GaussianNB()
+# The followings are the major steps in the analysis:
+# A. Visualize the data using dimensionality reduction PCA and LDA to gain
+#    further insight into the data
+# B. Algorithm selection using repeated nested cross validation to choose
+#    the algorithm that has highest accuracy
+# C. Model selection using repeated cross validation to identify the best
+#    hyperparameter values
 
-### Task 5: Tune your classifier to achieve better than .3 precision and recall 
+# The following classification algorithms are used:
+# 1. Logistic Regression
+# 2. Random Forest Classifier
+# 3. KNN Classifier
+# 4. Support Vector Classifier
+# 5. Neural Network: Multi-layer Perceptron Classifier
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import KFold
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+
+
+### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
 ### folder for details on the evaluation method, especially the test_classifier
 ### function. Because of the small size of the dataset, the script uses
-### stratified shuffle split cross validation. For more info: 
+### stratified shuffle split cross validation. For more info:
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
 # Example starting point. Try investigating other evaluation techniques!
