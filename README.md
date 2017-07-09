@@ -252,6 +252,6 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of KNN Classifier: 0.141 +/- 0.189
-Complete in 24.5 sec
+CV Recall Score of Linear SVC: 0.105 +/- 0.145
+Complete in 31.3 sec
 ```
