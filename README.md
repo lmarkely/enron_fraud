@@ -486,3 +486,69 @@ Complete in 0.1 sec
 CV Recall Score of Naive Bayes: 0.430 +/- 0.339
 Complete in 0.1 sec
 ```
+
+## Multi-Layer Perceptron
+The nested cross validation for Multi-Layer Perceptron is
+performed as follows.
+```
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+#MLP Classifier
+scores=[]
+clf_mlp = MLPClassifier(solver='lbfgs')
+pipe_mlp = Pipeline([['sc',StandardScaler()],
+                     ['clf',clf_mlp]])
+params_mlp = {'clf__activation':['logistic','relu'],'clf__alpha':10.0**np.arange(-4,4)}
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_mlp = GridSearchCV(estimator=pipe_mlp,param_grid=params_mlp,
+                               cv=fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_mlp,X,y,cv=fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of MLP: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_mlp = GridSearchCV(estimator=pipe_mlp,param_grid=params_mlp,
+                               cv=fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_mlp,X,y,cv=fold_outer,
+                                      scoring='precision'))
+print ('CV Precision of MLP: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_mlp = GridSearchCV(estimator=pipe_mlp,param_grid=params_mlp,
+                               cv=fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_mlp,X,y,cv=fold_outer,
+                                      scoring='recall'))
+print ('CV Recall Score of MLP: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+```
+Output:
+```
+CV F1 Score of MLP: 0.187 +/- 0.184
+Complete in 760.5 sec
+CV Precision of MLP: 0.204 +/- 0.219
+Complete in 589.0 sec
+CV Recall Score of MLP: 0.208 +/- 0.215
+Complete in 871.1 sec
+```
+## AdaBoost Classifier 
+The nested cross validation for Multi-Layer Perceptron is
+performed as follows.

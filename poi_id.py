@@ -368,6 +368,104 @@ print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
                                                                np.std(scores))
 print 'Complete in %.1f sec' %(time()-t0)
 
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+#MLP Classifier
+scores=[]
+clf_mlp = MLPClassifier(solver='lbfgs')
+pipe_mlp = Pipeline([['sc',StandardScaler()],
+                     ['clf',clf_mlp]])
+params_mlp = {'clf__activation':['logistic','relu'],'clf__alpha':10.0**np.arange(-4,4)}
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_mlp = GridSearchCV(estimator=pipe_mlp,param_grid=params_mlp,
+                               cv=fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_mlp,X,y,cv=fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of MLP: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_mlp = GridSearchCV(estimator=pipe_mlp,param_grid=params_mlp,
+                               cv=fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_mlp,X,y,cv=fold_outer,
+                                      scoring='precision'))
+print ('CV Precision of MLP: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_mlp = GridSearchCV(estimator=pipe_mlp,param_grid=params_mlp,
+                               cv=fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_mlp,X,y,cv=fold_outer,
+                                      scoring='recall'))
+print ('CV Recall Score of MLP: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+#AdaBoost Classifier
+scores=[]
+clf_ada = AdaBoostClassifier(random_state=42)
+pipe_ada = Pipeline([['sc',StandardScaler()],
+                     ['clf',clf_ada]])
+params_ada = {'clf__n_estimators':np.arange(1,11)*10}
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ada = GridSearchCV(estimator=pipe_ada,param_grid=params_ada,
+                               cv=fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_ada,X,y,cv=fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ada = GridSearchCV(estimator=pipe_ada,param_grid=params_ada,
+                               cv=fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_ada,X,y,cv=fold_outer,
+                                      scoring='precision'))
+print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ada = GridSearchCV(estimator=pipe_ada,param_grid=params_ada,
+                               cv=fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_ada,X,y,cv=fold_outer,
+                                      scoring='recall'))
+print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
