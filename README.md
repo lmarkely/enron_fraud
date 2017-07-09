@@ -24,8 +24,7 @@ among the features, we may return to stage 1 to reselect the feature.
 After the features are selected and engineered, nested cross validation will
 be used for algorithm selection in stage 3. Then, stage 4 identifies the
 hyperparameter values that give the best result for the selected algorithm.
-Three metrics, F1 score, precision, and recall will be used during the algorithm
-and model selection.
+Precision and recall will be used during the algorithm and model selection.
 
 ## Feature Selection and Engineering
 First, the row corresponding to 'TOTAL' as we are interested in the data of
