@@ -717,3 +717,17 @@ np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
                                                 ascending=[False,False])
 display(best_params_df)
 ```
+
+The results of the hyperparameter C tuning is presented in **Table 1**.The first column corresponds to the best C values selected in 1000 permutations of data splitting. The second column corresponds to the number of times each C value was
+selected as the best hyperparameter value. The third column, corresponds to the
+mean of either F1 score, precision, or recall when the corresponding C value was
+chosen. Similary, the other columns correspond to the standard deviation,
+minimum, 25% quantile, 50% quantile, 75% quantile, and maximum of the metrics
+scores when the corresponding C value was chosen. This summary shows
+that C = 0.0001 gives the best F1 score and recall. Although, this
+hyperparameter value does not give the best precision, the mean of precision is
+above 0.3 and it is selected as the best parameters in significant number of
+permutations of data splitting.
+
+**Table 1.** Summary of model selection for Logistic Regression.
+![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%203.png)
