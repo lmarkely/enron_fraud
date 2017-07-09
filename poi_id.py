@@ -72,6 +72,9 @@ labels, features = targetFeatureSplit(data)
 # 4. Support Vector Classifier
 # 5. Neural Network: Multi-layer Perceptron Classifier
 import numpy as np
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -91,6 +94,12 @@ y = np.array(labels)
 ### Identify the total number of data points.
 print 'Total number of data points:',np.shape(X)[0]
 print 'Total number of features:', np.shape(X)[1]
+
+df = pd.DataFrame(X_std)
+pg = sns.PairGrid(df)
+pg.map_diag(plt.hist)
+pg.map_offdiag(plt.scatter)
+plt.show()
 
 X_std = StandardScaler().fit_transform(X)
 pca = PCA()
