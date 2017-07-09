@@ -1,40 +1,34 @@
-# Enron Fraud project
+#!/usr/bin/python
 
-Enron was one of the largest companies in the US. It went into bankruptcy due to corporate fraud. A significant amount of Enron data (emails
-and financial data) were entered into public record as a result of Federal
-investigation. This project aims to build machine learning algorithm to
-identify Enron employees who may have committed fraud based on the public Enron
-financial and email dataset. More details about Enron scandal can be found on
-[Wikipedia](https://en.wikipedia.org/wiki/Enron_scandal).
+import sys
+import pickle
+sys.path.append("../tools/")
 
-## Workflow
-This project is divided into 4 main stages:
-1. Feature selection and engineering
-2. Data visualization
-3. Algorithm selection
-4. Model selection
+from feature_format import featureFormat, targetFeatureSplit
+from tester import dump_classifier_and_data
 
-Stage 1 will be performed with the help of stage 2. Stage 1 will determine the
-features that will be included for machine learning. Here, various data
-visualization techniques, including scatter plot matrix and PCA will be
-used (stage 2). This visualization will help identify if there is any redundancy
-among the features due to correlation, as well as provide some estimation on how
-the data are distributed in high dimensional space. If there are correlations
-among the features, we may return to stage 1 to reselect the feature.
-After the features are selected and engineered, nested cross validation will
-be used for algorithm selection in stage 3. Then, stage 4 identifies the
-hyperparameter values that give the best result for the selected algorithm.
-recall score, precision and recall will be used during the algorithm
-and model selection.
+### Task 1: Select what features you'll use.
+### features_list is a list of strings, each of which is a feature name.
+### The first feature must be "poi".
+### Include all quantitative features. In addition, 'std_from_poi' and
+### 'std_to_poi' are standardized feature (see details below).
+features_list = ['poi','salary', 'deferral_payments',
+                 'loan_advances', 'bonus', 'restricted_stock_deferred',
+                 'deferred_income', 'expenses',
+                 'exercised_stock_options', 'other', 'long_term_incentive',
+                 'restricted_stock', 'director_fees','shared_receipt_with_poi',
+                 'std_from_poi','std_to_poi']
 
-## Feature Selection and Engineering
-First, the row corresponding to 'TOTAL' as we are interested in the data of
-individuals. In addition, 'total_payments' and 'total_stock_values' are removed
-as they are aggregate of other features. Moreover, 'to_messages',
-'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi' are not included. Instead, they are standardized to 'std_from_poi' and 'std_to_poi'. These steps are captured in the following
-codes.
+### Load the dictionary containing the dataset
+with open("final_project_dataset.pkl", "r") as data_file:
+    data_dict = pickle.load(data_file)
 
-```
+### Task 2: Remove outliers
+
+### Task 3: Create new feature(s)
+### Store to my_dataset for easy export below.
+# Add new features: std_from_poi and std_to_poi by dividing the message
+# to/from poi by the total sent or received messages, respectively.
 data_dict.pop('TOTAL')
 for key in data_dict:
     if (type(data_dict[key]['from_poi_to_this_person']) == int and
@@ -51,85 +45,76 @@ for key in data_dict:
          data_dict[key]['to_messages'])
     else:
         data_dict[key]['std_to_poi'] = 0
-```
+my_dataset = data_dict
+### Extract features and labels from dataset for local testing
+data = featureFormat(my_dataset, features_list, sort_keys = True)
+labels, features = targetFeatureSplit(data)
 
-## Data Visualization
-First, a quick data exploration shows the followings.
-```
+### Task 4: Try a varity of classifiers
+### Please name your classifier clf for easy export below.
+### Note that if you want to do PCA or other multi-stage operations,
+### you'll need to use Pipelines. For more info:
+### http://scikit-learn.org/stable/modules/pipeline.html
+
+# Provided to give you a starting point. Try a variety of classifiers.
+# The followings are the major steps in the analysis:
+# A. Visualize the data using dimensionality reduction PCA and LDA to gain
+#    further insight into the data
+# B. Algorithm selection using repeated nested cross validation to choose
+#    the algorithm that has highest accuracy
+# C. Model selection using repeated cross validation to identify the best
+#    hyperparameter values
+
+# The following classification algorithms are used:
+# 1. Logistic Regression
+# 2. Random Forest Classifier
+# 3. KNN Classifier
+# 4. Support Vector Classifier
+# 5. Neural Network: Multi-layer Perceptron Classifier
+import numpy as np
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from time import time
+
+# For simplicity, rename features as X and labels as y
+X = features
+y = np.array(labels)
 ### First, explore the dataset.
 ### Identify the total number of data points.
 print 'Total number of data points:',np.shape(X)[0]
 print 'Total number of features:', np.shape(X)[1]
-```
-
-The output of the above code is as follows.
-```
-Total number of data points: 144
-Total number of features: 15
-```
-Pairplot of the dataset shows that there are some, but weak correlation among
-the features (**Fig. 1**). Thus, all features will be used in the following
-steps.
-
-![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%201.png)
-
-**Figure 1.** Pairplot of all features of Enron dataset.
-
-This plot is generated using [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html).
-```
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plt
+X_std = StandardScaler().fit_transform(X)
 df = pd.DataFrame(X_std)
 pg = sns.PairGrid(df)
 pg.map_diag(plt.hist)
 pg.map_offdiag(plt.scatter)
 plt.show()
-```
 
-Furthermore, PCA shows that though some Principal Components (PCs), capture more
-variance than others, the highest explained ratio is only 0.34. Thus, we will
-keep all the 15 features in the following stages. Since there is no
-significantly dominant PC, we will skip plotting the PCA here.
-
-```
 X_std = StandardScaler().fit_transform(X)
-pca = PCA(n_components=15)
+pca = PCA()
 X_pca = pca.fit_transform(X_std)
 print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
-```
 
-Output:
-```
-PCA explained_variance_ratio_ [ 0.34010581  0.12119602  0.104491    0.08764263  0.06768687  0.05239806
-  0.0467082   0.04564431  0.03765439  0.03034863  0.02354492  0.01881022
-  0.01624238  0.00752657  0.        ]
-```
-## Algorithm Selection
-Here, we will use repeated nested cross validation to choose the machine
-learning algorithm. We are using nested cross validation in order to test how
-each algorithm perform towards unseen data (**Fig. 2**). Furthermore, we are
-using repeated instead of unrepeated nested cross validation in order to avoid
-any bias due to the different combination of training, validation, and test
-sets. Detailed discussions on repeated cross validation can be found [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf).
+### Task 5: Tune your classifier to achieve better than .3 precision and recall
+### using our testing script. Check the tester.py script in the final project
+### folder for details on the evaluation method, especially the test_classifier
+### function. Because of the small size of the dataset, the script uses
+### stratified shuffle split cross validation. For more info:
+### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
-![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%202.png)
-
-**Figure 2.** Schematic diagram of nested cross validation.
-
-The following algorithms from scikit-learn will be evaluated.
-1. Logistic Regression
-2. Random Forest Classifier
-3. K-Nearest Neighbors Classifier
-4. Linear Support Vector Classifier
-5. Kernel Support Vector Classifier
-6. Naive Bayes
-7. Multi-Layer Perceptron Classifier
-8. AdaBoost Classifier
-
-### Logistic Regression
-The nested cross validation for Logistic Regression is performed as follows.
-```
 #Set the number of repeats of the cross validation
 N_outer = 5
 N_inner = 5
@@ -179,21 +164,7 @@ for i in range(N_outer):
 print ('CV Recall Score of Logistic Regression: %.3f +/- %.3f'
        %(np.mean(scores),np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of Logistic Regression: 0.260 +/- 0.199
-Complete in 32.9 sec
-CV Precision Score of Logistic Regression: 0.250 +/- 0.229
-Complete in 31.0 sec
-CV Recall Score of Logistic Regression: 0.283 +/- 0.238
-Complete in 29.5 sec
-```
 
-### Random Forest Classifier
-The nested cross validation for Random Forest Classifier is
-performed as follows.
-```
 #Set the number of repeats of the cross validation
 N_outer = 5
 N_inner = 5
@@ -240,21 +211,7 @@ for i in range(N_outer):
 print ('CV Recall Score of Random Forest Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of Random Forest Classifier: 0.219 +/- 0.226
-Complete in 184.3 sec
-CV Precision Score of Random Forest Classifier: 0.241 +/- 0.280
-Complete in 366.0 sec
-CV Recall Score of Random Forest Classifier: 0.233 +/- 0.268
-Complete in 551.9 sec
-```
 
-### K-Nearest Neighbors Classifier
-The nested cross validation for K-Nearest Neighbors Classifier is
-performed as follows.
-```
 #Set the number of repeats of the cross validation
 N_outer = 5
 N_inner = 5
@@ -271,53 +228,13 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
-                              cv=k_fold_inner,scoring='f1')
-        scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print ('CV F1 Score of KNN Classifier: %.3f +/- %.3f'
-       %(np.mean(scores), np.std(scores)))
-print 'Complete in %.1f sec' %(time()-t0)
-
-t0 = time()
-for i in range(N_outer):
-    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
-    for j in range(N_inner):
-        k_fold_inner = StratifiedStratifiedKFold(n_splits=5,shuffle=True,random_state=j)
-        gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
-                              cv=k_fold_inner,scoring='precision')
-        scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
-                                      scoring='precision'))
-print ('CV Precision Score of KNN Classifier: %.3f +/- %.3f'
-       %(np.mean(scores), np.std(scores)))
-print 'Complete in %.1f sec' %(time()-t0)
-
-t0 = time()
-for i in range(N_outer):
-    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
-    for j in range(N_inner):
-        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
-        gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
                               cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
                                       scoring='recall'))
 print ('CV Recall Score of KNN Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of KNN Classifier: 0.203 +/- 0.208
-Complete in 22.6 sec
-CV Precision Score of KNN Classifier: 0.222 +/- 0.268
-Complete in 24.4 sec
-CV Recall Score of KNN Classifier: 0.221 +/- 0.250
-Complete in 24.1 sec
-```
 
-### Linear SVC
-The nested cross validation for Linear SVC is
-performed as follows.
-```
 #Set the number of repeats of the cross validation
 N_outer = 5
 N_inner = 5
@@ -366,21 +283,7 @@ for i in range(N_outer):
 print ('CV Recall Score of Linear SVC: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of Linear SVC: 0.157 +/- 0.186
-Complete in 31.8 sec
-CV Precision Score of Linear SVC: 0.169 +/- 0.223
-Complete in 29.9 sec
-CV Recall Score of Linear SVC: 0.169 +/- 0.215
-Complete in 29.6 sec
-```
 
-### Kernel SVC
-The nested cross validation for Kernel SVC is
-performed as follows.
-```
 #Set the number of repeats of the cross validation
 N_outer = 5
 N_inner = 5
@@ -427,21 +330,7 @@ for i in range(N_outer):
 print ('CV Recall Score of Kernel SVC: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of Kernel SVC: 0.208 +/- 0.215
-Complete in 250.2 sec
-CV Precision Score of Kernel SVC: 0.233 +/- 0.290
-Complete in 499.9 sec
-CV Recall Score of Kernel SVC: 0.231 +/- 0.269
-Complete in 760.1 sec
-```
 
-### Naive Bayes
-As there is no regularization parameter for Naive Bayes, we will simply use
-cross validation.
-```
 #Set the number of repeats of the cross validation
 N_outer = 5
 
@@ -476,21 +365,7 @@ for i in range(N_outer):
 print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
                                                                np.std(scores))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of Naive Bayes: 0.257 +/- 0.062
-Complete in 0.1 sec
-CV Precision Score of Naive Bayes: 0.205 +/- 0.075
-Complete in 0.1 sec
-CV Recall Score of Naive Bayes: 0.430 +/- 0.339
-Complete in 0.1 sec
-```
 
-### Multi-Layer Perceptron Classifier
-The nested cross validation for Multi-Layer Perceptron is
-performed as follows.
-```
 #Set the number of repeats of the cross validation
 N_outer = 5
 N_inner = 5
@@ -539,25 +414,12 @@ for i in range(N_outer):
 print ('CV Recall Score of MLP: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of MLP: 0.187 +/- 0.184
-Complete in 760.5 sec
-CV Precision of MLP: 0.204 +/- 0.219
-Complete in 589.0 sec
-CV Recall Score of MLP: 0.208 +/- 0.215
-Complete in 871.1 sec
-```
-### AdaBoost Classifier
-The nested cross validation for Multi-Layer Perceptron is
-performed as follows.
-```
+
 #Set the number of repeats of the cross validation
 N_outer = 5
 N_inner = 5
 
-#Kernel SVC
+#AdaBoost Classifier
 scores=[]
 clf_ada = AdaBoostClassifier(random_state=42)
 pipe_ada = Pipeline([['sc',StandardScaler()],
@@ -601,37 +463,7 @@ for i in range(N_outer):
 print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-```
-Output:
-```
-CV F1 Score of AdaBoost: 0.269 +/- 0.222
-Complete in 40.0 sec
-CV F1 Score of AdaBoost: 0.224 +/- 0.227
-Complete in 40.0 sec
-CV F1 Score of AdaBoost: 0.233 +/- 0.226
-Complete in 40.8 sec
-```
-The above results show that Logistic Regression has the best combination of F1
-score, precision, and recall. Gaussian Naive Bayes has higher recall score than
-Logistic Regression, but it has lower precision score. Since, precision and
-recall scores of Logistic regression cover 0.3, minimum criterion for this
-project, Logistic Regression is chosen for model selection. Moreover, similar
-pipeline consisting of StandardScaler, PCA, and classifier was assessed in
-parallel, but did not perform better than the current setup. These data are not
-presented here, but can be found in the Jupyter Notebook
-'Enron_fraud-PCA.ipynb'. Similarly, a pipeline consisting of MinMaxScaler,
-SelectKBest, and classifier also did not perform better than the current setup.
-These data can be found in the Jupyter Notebook 'Enron_fraud-SKB.ipynb'. As an
-alternative to StratifiedKFold with shuffle, StratifiedShuffleSplit was
-evaluated. Similar to the other alternatives, this option did not perform better
-than the current setup. Thus, the current setup with Logistic Regression is
-chosen for the next step.
 
-## Model Selection
-In model selection, repeated cross validation is used to select the optimum
-hyperparameter value, 'C', based on F1 score, precision, and recall as shown
-in the followings.
-```
 from IPython.core.display import display
 #Model selection based on F1 Score
 n_reps = 1000
@@ -716,20 +548,11 @@ best_params_df = \
 np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
                                                 ascending=[False,False])
 display(best_params_df)
-```
 
-The results of the hyperparameter C tuning is presented in **Table 1**.The first column corresponds to the best C values selected in 1000 permutations of data splitting. The second column corresponds to the number of times each C value was
-selected as the best hyperparameter value. The third column, corresponds to the
-mean of either F1 score, precision, or recall when the corresponding C value was
-chosen. Similary, the other columns correspond to the standard deviation,
-minimum, 25% quantile, 50% quantile, 75% quantile, and maximum of the metrics
-scores when the corresponding C value was chosen. This summary shows
-that C = 0.0001 gives the best F1 score and recall. Although, this
-hyperparameter value does not give the best precision, the mean of precision is
-above 0.3 and it is selected as the best parameters in significant number of
-permutations of data splitting.
 
-**Table 1.** Summary of model selection for Logistic Regression.
-![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%203.png)
+### Task 6: Dump your classifier, dataset, and features_list so anyone can
+### check your results. You do not need to change anything below, but make sure
+### that the version of poi_id.py that you submit can be run on its own and
+### generates the necessary .pkl files for validating your results.
 
-## Udacity Project Questions
+dump_classifier_and_data(clf, my_dataset, features_list)
