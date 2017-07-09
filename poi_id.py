@@ -466,6 +466,91 @@ print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 
+from IPython.core.display import display
+#Model selection based on F1 Score
+n_reps = 1000
+best_params = []
+
+clf_lr = LogisticRegression(penalty='l2')
+pipe_lr = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_lr]])
+params_lr = {'clf__C':10.0**np.arange(-4,4)}
+
+for rep in np.arange(n_reps):
+    k_fold = StratifiedKFold(n_splits=5,shuffle=True,random_state=rep)
+    gs_lr_cv = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
+                            cv=k_fold,scoring='f1')
+    gs_lr_cv = gs_lr_cv.fit(X,y)
+    best_param = gs_lr_cv.best_params_
+    best_param.update({'Best Score': gs_lr_cv.best_score_})
+    best_params.append(best_param)
+
+#DataFrame summarizing average of best scores, frequency for each best
+#parameter value
+best_params_df = pd.DataFrame(best_params)
+best_params_df = best_params_df.rename(columns={'clf__C':'C'})
+best_params_df = best_params_df.groupby('C')['Best Score'].describe()
+best_params_df = \
+np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
+                                                ascending=[False,False])
+display(best_params_df)
+
+# Model selection based on precision
+n_reps = 1000
+best_params = []
+
+clf_lr = LogisticRegression(penalty='l2')
+pipe_lr = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_lr]])
+params_lr = {'clf__C':10.0**np.arange(-4,4)}
+
+for rep in np.arange(n_reps):
+    k_fold = StratifiedKFold(n_splits=5,shuffle=True,random_state=rep)
+    gs_lr_cv = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
+                            cv=k_fold,scoring='precision')
+    gs_lr_cv = gs_lr_cv.fit(X,y)
+    best_param = gs_lr_cv.best_params_
+    best_param.update({'Best Score': gs_lr_cv.best_score_})
+    best_params.append(best_param)
+
+#DataFrame summarizing average of best scores, frequency for each
+#best parameter value
+best_params_df = pd.DataFrame(best_params)
+best_params_df = best_params_df.rename(columns={'clf__C':'C'})
+best_params_df = best_params_df.groupby('C')['Best Score'].describe()
+best_params_df = \
+np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
+                                                ascending=[False,False])
+display(best_params_df)
+
+# Model selection based on recall
+n_reps = 1000
+best_params = []
+
+clf_lr = LogisticRegression(penalty='l2')
+pipe_lr = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_lr]])
+params_lr = {'clf__C':10.0**np.arange(-4,4)}
+
+for rep in np.arange(n_reps):
+    k_fold = StratifiedKFold(n_splits=5,shuffle=True,random_state=rep)
+    gs_lr_cv = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,cv=k_fold,
+                            scoring='recall')
+    gs_lr_cv = gs_lr_cv.fit(X,y)
+    best_param = gs_lr_cv.best_params_
+    best_param.update({'Best Score': gs_lr_cv.best_score_})
+    best_params.append(best_param)
+
+#DataFrame summarizing average of best scores, frequency for each best
+#parameter value
+best_params_df = pd.DataFrame(best_params)
+best_params_df = best_params_df.rename(columns={'clf__C':'C'})
+best_params_df = best_params_df.groupby('C')['Best Score'].describe()
+best_params_df = \
+np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
+                                                ascending=[False,False])
+display(best_params_df)
+
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and

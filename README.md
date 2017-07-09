@@ -125,6 +125,7 @@ The following algorithms from scikit-learn will be evaluated.
 5. Kernel Support Vector Classifier
 6. Naive Bayes
 7. Multi-Layer Perceptron Classifier
+8. AdaBoost Classifier
 
 ### Logistic Regression
 The nested cross validation for Logistic Regression is performed as follows.
@@ -486,7 +487,7 @@ CV Recall Score of Naive Bayes: 0.430 +/- 0.339
 Complete in 0.1 sec
 ```
 
-## Multi-Layer Perceptron Classifier
+### Multi-Layer Perceptron Classifier
 The nested cross validation for Multi-Layer Perceptron is
 performed as follows.
 ```
@@ -548,7 +549,7 @@ Complete in 589.0 sec
 CV Recall Score of MLP: 0.208 +/- 0.215
 Complete in 871.1 sec
 ```
-## AdaBoost Classifier
+### AdaBoost Classifier
 The nested cross validation for Multi-Layer Perceptron is
 performed as follows.
 ```
@@ -625,3 +626,94 @@ alternative to StratifiedKFold with shuffle, StratifiedShuffleSplit was
 evaluated. Similar to the other alternatives, this option did not perform better
 than the current setup. Thus, the current setup with Logistic Regression is
 chosen for the next step.
+
+## Model Selection
+In model selection, repeated cross validation is used to select the optimum
+hyperparameter value, 'C', based on F1 score, precision, and recall as shown
+in the followings.
+```
+from IPython.core.display import display
+#Model selection based on F1 Score
+n_reps = 1000
+best_params = []
+
+clf_lr = LogisticRegression(penalty='l2')
+pipe_lr = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_lr]])
+params_lr = {'clf__C':10.0**np.arange(-4,4)}
+
+for rep in np.arange(n_reps):
+    k_fold = StratifiedKFold(n_splits=5,shuffle=True,random_state=rep)
+    gs_lr_cv = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
+                            cv=k_fold,scoring='f1')
+    gs_lr_cv = gs_lr_cv.fit(X,y)
+    best_param = gs_lr_cv.best_params_
+    best_param.update({'Best Score': gs_lr_cv.best_score_})
+    best_params.append(best_param)
+
+#DataFrame summarizing average of best scores, frequency for each best
+#parameter value
+best_params_df = pd.DataFrame(best_params)
+best_params_df = best_params_df.rename(columns={'clf__C':'C'})
+best_params_df = best_params_df.groupby('C')['Best Score'].describe()
+best_params_df = \
+np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
+                                                ascending=[False,False])
+display(best_params_df)
+
+# Model selection based on precision
+n_reps = 1000
+best_params = []
+
+clf_lr = LogisticRegression(penalty='l2')
+pipe_lr = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_lr]])
+params_lr = {'clf__C':10.0**np.arange(-4,4)}
+
+for rep in np.arange(n_reps):
+    k_fold = StratifiedKFold(n_splits=5,shuffle=True,random_state=rep)
+    gs_lr_cv = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
+                            cv=k_fold,scoring='precision')
+    gs_lr_cv = gs_lr_cv.fit(X,y)
+    best_param = gs_lr_cv.best_params_
+    best_param.update({'Best Score': gs_lr_cv.best_score_})
+    best_params.append(best_param)
+
+#DataFrame summarizing average of best scores, frequency for each
+#best parameter value
+best_params_df = pd.DataFrame(best_params)
+best_params_df = best_params_df.rename(columns={'clf__C':'C'})
+best_params_df = best_params_df.groupby('C')['Best Score'].describe()
+best_params_df = \
+np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
+                                                ascending=[False,False])
+display(best_params_df)
+
+# Model selection based on recall
+n_reps = 1000
+best_params = []
+
+clf_lr = LogisticRegression(penalty='l2')
+pipe_lr = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_lr]])
+params_lr = {'clf__C':10.0**np.arange(-4,4)}
+
+for rep in np.arange(n_reps):
+    k_fold = StratifiedKFold(n_splits=5,shuffle=True,random_state=rep)
+    gs_lr_cv = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,cv=k_fold,
+                            scoring='recall')
+    gs_lr_cv = gs_lr_cv.fit(X,y)
+    best_param = gs_lr_cv.best_params_
+    best_param.update({'Best Score': gs_lr_cv.best_score_})
+    best_params.append(best_param)
+
+#DataFrame summarizing average of best scores, frequency for each best
+#parameter value
+best_params_df = pd.DataFrame(best_params)
+best_params_df = best_params_df.rename(columns={'clf__C':'C'})
+best_params_df = best_params_df.groupby('C')['Best Score'].describe()
+best_params_df = \
+np.round(best_params_df,decimals=2).sort_values(['mean','count'],axis=0,
+                                                ascending=[False,False])
+display(best_params_df)
+```
