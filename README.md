@@ -313,6 +313,6 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of Logistic Regression: 0.902 +/- 0.160
+CV Recall Score of Naive Bayes: 0.902 +/- 0.160
 Complete in 0.1 sec
 ```
