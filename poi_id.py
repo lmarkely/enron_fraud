@@ -133,11 +133,38 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
+                             cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of Logistic Regression: %.3f +/- %.3f'
+       %(np.mean(scores),np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
+                             cv=k_fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
+                                      scoring='precision'))
+print ('CV Precision Score of Logistic Regression: %.3f +/- %.3f'
+       %(np.mean(scores),np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
                              cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
                                       scoring='recall'))
-print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
-                                                               np.std(scores))
+
+print ('CV Recall Score of Logistic Regression: %.3f +/- %.3f'
+       %(np.mean(scores),np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 
 #Set the number of repeats of the cross validation
@@ -233,8 +260,10 @@ print ('CV Recall Score of Kernel SVC: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 
-#Naive Bayes
+#Set the number of repeats of the cross validation
 N_outer = 5
+
+#Naive Bayes
 scores=[]
 clf_nb = GaussianNB()
 pipe_nb = Pipeline([['sc',StandardScaler()],
