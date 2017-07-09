@@ -30,7 +30,7 @@ and model selection.
 
 ## Feature Selection and Engineering
 First, the row corresponding to 'TOTAL' is removed. In addition, all features
-are included except 'to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi'.
+are included except 'total_payments','total_stock_values','to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi'.
 Furthermore, 'std_from_poi' and 'std_to_poi' are standardized features derived
 as follows.
 
@@ -83,7 +83,7 @@ collinear. In other words, some of the features are correlated with each other.
 This correlation should be avoided for LDA because it implies redundancy and
 confuses the interpretation of the  LDA coefficients. More detailed explanation
 can be found [here](https://stats.stackexchange.com/questions/29385/collinear-variables-in-multiclass-lda-training). This correlation is confirmed by the following scatterplot
-matrix (**Fig. 1**). 
+matrix (**Fig. 1**).
 
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%201.png)
 

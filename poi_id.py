@@ -12,9 +12,9 @@ from tester import dump_classifier_and_data
 ### The first feature must be "poi".
 ### Include all quantitative features. In addition, 'std_from_poi' and
 ### 'std_to_poi' are standardized feature (see details below).
-features_list = ['poi','salary', 'deferral_payments', 'total_payments',
+features_list = ['poi','salary', 'deferral_payments',
                  'loan_advances', 'bonus', 'restricted_stock_deferred',
-                 'deferred_income', 'total_stock_value', 'expenses',
+                 'deferred_income', 'expenses',
                  'exercised_stock_options', 'other', 'long_term_incentive',
                  'restricted_stock', 'director_fees','shared_receipt_with_poi',
                  'std_from_poi','std_to_poi']
