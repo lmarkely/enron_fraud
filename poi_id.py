@@ -83,6 +83,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
@@ -115,7 +116,27 @@ print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
 clf_labels = \
 ['Logistic Regression','KNN','Random Forest','SVC','Kernel SVC','MLP']
 
+#Set the number of repeats of the cross validation
+N_outer = 10
+N_inner = 10
 
+#Logistic Regression
+scores=[]
+clf_lr = LogisticRegression(penalty='l2')
+pipe_lr = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_lr]])
+params_lr = {'clf__C':10.0**np.arange(-4,4)}
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
+                             cv=k_fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
+                                      scoring='recall'))
+print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f %s' %(np.mean(scores),
+                                                               np.std(scores),
+                                                               '%')
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
