@@ -113,7 +113,7 @@ learning algorithm. We are using nested cross validation in order to test how
 each algorithm perform towards unseen data (**Fig. 2**). Furthermore, we are
 using repeated instead of unrepeated nested cross validation in order to avoid
 any bias due to the different combination of training, validation, and test
-sets.
+sets. Detailed discussions on repeated cross validation can be found [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf).
 
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%202.png)
 
