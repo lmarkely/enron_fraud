@@ -183,13 +183,36 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
+                             cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of Random Forest Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
+                             cv=k_fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
+                                      scoring='precision'))
+print ('CV Precision Score of Random Forest Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
                              cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
                                       scoring='recall'))
 print ('CV Recall Score of Random Forest Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
-
 
 #Set the number of repeats of the cross validation
 N_outer = 5
