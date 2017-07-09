@@ -29,10 +29,11 @@ Three metrics, F1 score, precision, and recall will be used during the algorithm
 and model selection.
 
 ## Feature Selection and Engineering
-First, the row corresponding to 'TOTAL' is removed. In addition, all features
-are included except 'total_payments','total_stock_values','to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi'.
-Furthermore, 'std_from_poi' and 'std_to_poi' are standardized features derived
-as follows.
+First, the row corresponding to 'TOTAL' as we are interested in the data of
+individuals. In addition, 'total_payments' and 'total_stock_values' are removed
+as they are aggregate of other features. Moreover, 'to_messages',
+'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi' are not included. Instead, they are standardized to 'std_from_poi' and 'std_to_poi'. These steps are captured in the following
+codes.
 
 ```
 data_dict.pop('TOTAL')
