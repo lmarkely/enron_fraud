@@ -83,7 +83,6 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # For simplicity, rename features as X and labels as y
 X = features
@@ -96,10 +95,7 @@ print 'Total number of features:', np.shape(X)[1]
 X_std = StandardScaler().fit_transform(X)
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X_std)
-lda = LinearDiscriminantAnalysis(n_components=2)
-X_lda = lda.fit_transform(X_std,y)
 print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
-print 'LDA explained variance:', lda.explained_variance_ratio_
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
