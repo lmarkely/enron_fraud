@@ -218,8 +218,8 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of Logistic Regression: 0.240 +/- 0.204
-Complete in 32.3 sec
+CV Recall Score of Logistic Regression: 0.302 +/- 0.234
+Complete in 31.4 sec
 ```
 
 ### Random Forest Classifier
@@ -251,8 +251,8 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of Random Forest Classifier: 0.170 +/- 0.231
-Complete in 183.9 sec
+CV Recall Score of Random Forest Classifier: 0.194 +/- 0.273
+Complete in 188.0 sec
 ```
 
 ### K-Nearest Neighbors Classifier
@@ -283,6 +283,39 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of KNN Classifier: 0.146 +/- 0.207
-Complete in 24.6 sec
+CV Recall Score of KNN Classifier: 0.141 +/- 0.189
+Complete in 24.5 sec
+```
+
+### Linear SVC
+The nested cross validation for Linear SVC is
+performed as follows.
+```
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+#Linear SVC
+scores=[]
+clf_svc = SVC()
+pipe_svc = Pipeline([['sc',StandardScaler()],
+                     ['clf',clf_svc]])
+params_svc = {'clf__C':10.0**np.arange(-4,4)}
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_svc = GridSearchCV(estimator=pipe_svc,param_grid=params_svc,
+                              cv=k_fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_svc,X,y,cv=k_fold_outer,
+                                      scoring='recall'))
+print ('CV Recall Score of Linear SVC: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+```
+Output:
+```
+CV Recall Score of KNN Classifier: 0.141 +/- 0.189
+Complete in 24.5 sec
 ```

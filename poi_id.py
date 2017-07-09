@@ -187,6 +187,29 @@ print ('CV Recall Score of KNN Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+#Linear SVC
+scores=[]
+clf_svc = SVC()
+pipe_svc = Pipeline([['sc',StandardScaler()],
+                     ['clf',clf_svc]])
+params_svc = {'clf__C':10.0**np.arange(-4,4)}
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_svc = GridSearchCV(estimator=pipe_svc,param_grid=params_svc,
+                              cv=k_fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_svc,X,y,cv=k_fold_outer,
+                                      scoring='recall'))
+print ('CV Recall Score of Linear SVC: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
