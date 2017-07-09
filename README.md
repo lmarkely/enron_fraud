@@ -88,11 +88,11 @@ pg.map_offdiag(plt.scatter)
 plt.show()
 ```
 
-Furthermore, PCA shows that to capture ~90% variance, we
-need to keep the first 8 principal components (PCs). These PCs will be used in
-the following stages. We will later compare the performance of the
-algorithm with and without PCA. As there is no significantly dominant PC, we
-will skip plotting the PCA here.
+Furthermore, PCA shows that though some Principal Components (PCs), capture more
+variance than others, the highest explained ratio is only 0.34. Thus, we will
+keep all the 15 features in the following stages. At the end of stage 4, we will
+return to compare the performance of the algorithm with and without PCA.
+As there is no significantly dominant PC, we will skip plotting the PCA here.
 
 ```
 X_std = StandardScaler().fit_transform(X)
