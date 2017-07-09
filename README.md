@@ -142,9 +142,9 @@ pipe_lr = Pipeline([['sc',StandardScaler()],
 params_lr = {'clf__C':10.0**np.arange(-4,4)}
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     for j in range(N_inner):
-        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
                              cv=k_fold_inner,scoring='f1')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
@@ -155,9 +155,9 @@ print 'Complete in %.1f sec' %(time()-t0)
 
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     for j in range(N_inner):
-        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
                              cv=k_fold_inner,scoring='precision')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
@@ -168,9 +168,9 @@ print 'Complete in %.1f sec' %(time()-t0)
 
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     for j in range(N_inner):
-        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
                              cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
@@ -182,12 +182,12 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of Logistic Regression: 0.240 +/- 0.204
-Complete in 30.3 sec
-CV Precision Score of Logistic Regression: 0.254 +/- 0.253
-Complete in 30.2 sec
-CV Recall Score of Logistic Regression: 0.270 +/- 0.248
-Complete in 30.5 sec
+CV F1 Score of Logistic Regression: 0.260 +/- 0.199
+Complete in 32.9 sec
+CV Precision Score of Logistic Regression: 0.250 +/- 0.229
+Complete in 31.0 sec
+CV Recall Score of Logistic Regression: 0.283 +/- 0.238
+Complete in 29.5 sec
 ```
 
 ### Random Forest Classifier
@@ -206,9 +206,33 @@ pipe_rf = Pipeline([['sc',StandardScaler()],
 params_rf = {'clf__n_estimators':np.arange(1,11)}
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     for j in range(N_inner):
-        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
+                             cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of Random Forest Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
+                             cv=k_fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
+                                      scoring='precision'))
+print ('CV Precision Score of Random Forest Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
                              cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
@@ -219,8 +243,12 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of Random Forest Classifier: 0.194 +/- 0.273
-Complete in 188.0 sec
+CV F1 Score of Random Forest Classifier: 0.219 +/- 0.226
+Complete in 184.3 sec
+CV Precision Score of Random Forest Classifier: 0.241 +/- 0.280
+Complete in 366.0 sec
+CV Recall Score of Random Forest Classifier: 0.233 +/- 0.268
+Complete in 551.9 sec
 ```
 
 ### K-Nearest Neighbors Classifier
@@ -231,6 +259,7 @@ performed as follows.
 N_outer = 5
 N_inner = 5
 
+#KNN Classifier
 scores=[]
 clf_knn = KNeighborsClassifier()
 pipe_knn = Pipeline([['sc',StandardScaler()],
@@ -238,9 +267,35 @@ pipe_knn = Pipeline([['sc',StandardScaler()],
 params_knn = {'clf__n_neighbors':np.arange(1,6)}
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     for j in range(N_inner):
-        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
+                              cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of KNN Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedStratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
+                              cv=k_fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
+                                      scoring='precision'))
+print ('CV Precision Score of KNN Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
                               cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
@@ -251,8 +306,12 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of KNN Classifier: 0.141 +/- 0.189
-Complete in 24.5 sec
+CV F1 Score of KNN Classifier: 0.203 +/- 0.208
+Complete in 22.6 sec
+CV Precision Score of KNN Classifier: 0.222 +/- 0.268
+Complete in 24.4 sec
+CV Recall Score of KNN Classifier: 0.221 +/- 0.250
+Complete in 24.1 sec
 ```
 
 ### Linear SVC
@@ -271,9 +330,35 @@ pipe_svc = Pipeline([['sc',StandardScaler()],
 params_svc = {'clf__C':10.0**np.arange(-4,4)}
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     for j in range(N_inner):
-        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_svc = GridSearchCV(estimator=pipe_svc,param_grid=params_svc,
+                              cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_svc,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of Linear SVC: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_svc = GridSearchCV(estimator=pipe_svc,param_grid=params_svc,
+                              cv=k_fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_svc,X,y,cv=k_fold_outer,
+                                      scoring='precision'))
+print ('CV Precision Score of Linear SVC: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_svc = GridSearchCV(estimator=pipe_svc,param_grid=params_svc,
                               cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_svc,X,y,cv=k_fold_outer,
@@ -284,8 +369,12 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of Linear SVC: 0.105 +/- 0.145
-Complete in 31.3 sec
+CV F1 Score of Linear SVC: 0.157 +/- 0.186
+Complete in 31.8 sec
+CV Precision Score of Linear SVC: 0.169 +/- 0.223
+Complete in 29.9 sec
+CV Recall Score of Linear SVC: 0.169 +/- 0.215
+Complete in 29.6 sec
 ```
 
 ### Kernel SVC
@@ -300,13 +389,37 @@ N_inner = 5
 scores=[]
 clf_ksvc = SVC(kernel='rbf')
 pipe_ksvc = Pipeline([['sc',StandardScaler()],
-                      ['clf',clf_ksvc]])
+                     ['clf',clf_ksvc]])
 params_ksvc = {'clf__C':10.0**np.arange(-4,4),'clf__gamma':10.0**np.arange(-4,4)}
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     for j in range(N_inner):
-        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ksvc = GridSearchCV(estimator=pipe_ksvc,param_grid=params_ksvc,
+                               cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_ksvc,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of Kernel SVC: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ksvc = GridSearchCV(estimator=pipe_ksvc,param_grid=params_ksvc,
+                               cv=k_fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_ksvc,X,y,cv=k_fold_outer,
+                                      scoring='precision'))
+print ('CV Precision Score of Kernel SVC: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
         gs_ksvc = GridSearchCV(estimator=pipe_ksvc,param_grid=params_ksvc,
                                cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_ksvc,X,y,cv=k_fold_outer,
@@ -317,8 +430,12 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of Kernel SVC: 0.161 +/- 0.221
-Complete in 254.7 sec
+CV F1 Score of Kernel SVC: 0.208 +/- 0.215
+Complete in 250.2 sec
+CV Precision Score of Kernel SVC: 0.233 +/- 0.290
+Complete in 499.9 sec
+CV Recall Score of Kernel SVC: 0.231 +/- 0.269
+Complete in 760.1 sec
 ```
 
 ### Naive Bayes
@@ -335,7 +452,25 @@ pipe_nb = Pipeline([['sc',StandardScaler()],
                     ['clf',clf_nb]])
 t0 = time()
 for i in range(N_outer):
-    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    scores.append(cross_val_score(pipe_nb,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
+                                                               np.std(scores))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    scores.append(cross_val_score(pipe_nb,X,y,cv=k_fold_outer,
+                                      scoring='precision'))
+print 'CV Precision Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
+                                                               np.std(scores))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
     scores.append(cross_val_score(pipe_nb,X,y,cv=k_fold_outer,
                                       scoring='recall'))
 print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
@@ -344,6 +479,10 @@ print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV Recall Score of Naive Bayes: 0.902 +/- 0.160
+CV F1 Score of Naive Bayes: 0.257 +/- 0.062
+Complete in 0.1 sec
+CV Precision Score of Naive Bayes: 0.205 +/- 0.075
+Complete in 0.1 sec
+CV Recall Score of Naive Bayes: 0.430 +/- 0.339
 Complete in 0.1 sec
 ```
