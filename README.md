@@ -83,9 +83,11 @@ collinear. In other words, some of the features are correlated with each other.
 This correlation should be avoided for LDA because it implies redundancy and
 confuses the interpretation of the  LDA coefficients. More detailed explanation
 can be found [here](https://stats.stackexchange.com/questions/29385/collinear-variables-in-multiclass-lda-training). This correlation is confirmed by the following scatterplot
-matrix (Fig. 1)
+matrix (**Fig. 1**). 
 
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%201.png)
+
+**Figure 1.** Pairplot of all features of Enron dataset.
 
 This plot is generated using [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html).
 ```
