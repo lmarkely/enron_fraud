@@ -118,8 +118,8 @@ clf_labels = \
 ['Logistic Regression','KNN','Random Forest','SVC','Kernel SVC','MLP']
 
 #Set the number of repeats of the cross validation
-N_outer = 10
-N_inner = 10
+N_outer = 5
+N_inner = 5
 
 #Logistic Regression
 scores=[]
@@ -140,6 +140,27 @@ print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f %s' %(np.mean(scores),
                                                                np.std(scores),
                                                                '%')
 print 'Complete in %.1f sec' %(time()-t0)
+
+#Random Forest Classifier
+scores=[]
+clf_rf = RandomForestClassifier(random_state=42)
+pipe_rf = Pipeline([['sc',StandardScaler()],
+                    ['clf',clf_rf]])
+params_rf = {'clf__n_estimators':np.arange(1,11)}
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
+                             cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of Random Forest Classifier: %.3f +/- %.3f %s'
+       %(np.mean(scores), np.std(scores), '%'))
+print 'Complete in %.1f sec' %(time()-t0)
+
+
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
