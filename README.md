@@ -54,7 +54,7 @@ for key in data_dict:
 ```
 
 ## Data Visualization
-First, a quick data exploration shows the followings
+First, a quick data exploration shows the followings.
 ```
 ### First, explore the dataset.
 ### Identify the total number of data points.
@@ -107,3 +107,14 @@ PCA explained_variance_ratio_ [ 0.34010581  0.12119602  0.104491    0.08764263  
   0.0467082   0.04564431  0.03765439  0.03034863  0.02354492  0.01881022
   0.01624238  0.00752657  0.        ]
 ```
+## Algorithm Selection
+Here, we will use repeated nested cross validation to choose the machine
+learning algorithm. We are using nested cross validation in order to test how
+each algorithm perform towards unseen data (**Fig. 2**). Furthermore, we are
+using repeated instead of unrepeated nested cross validation in order to avoid
+any bias due to the different combination of training, validation, and test
+sets.
+
+![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%202.png)
+
+**Figure 2.** Schematic diagram of nested cross validation.
