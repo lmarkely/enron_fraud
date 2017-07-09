@@ -24,16 +24,12 @@ with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
 
 ### Task 2: Remove outliers
-### First, explore the dataset.
-### Identify the total number of data points.
-print 'Total number of data points:',len(data_dict)
-
 
 ### Task 3: Create new feature(s)
 ### Store to my_dataset for easy export below.
-my_dataset = data_dict
 # Add new features: std_from_poi and std_to_poi by dividing the message
 # to/from poi by the total sent or received messages, respectively.
+data_dict.pop('TOTAL')
 for key in data_dict:
     if (type(data_dict[key]['from_poi_to_this_person']) == int and
         type(data_dict[key]['from_messages']) == int):
@@ -49,7 +45,7 @@ for key in data_dict:
          data_dict[key]['to_messages'])
     else:
         data_dict[key]['std_to_poi'] = 0
-
+my_dataset = data_dict
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
@@ -75,7 +71,7 @@ labels, features = targetFeatureSplit(data)
 # 3. KNN Classifier
 # 4. Support Vector Classifier
 # 5. Neural Network: Multi-layer Perceptron Classifier
-
+import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -92,6 +88,10 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 # For simplicity, rename features as X and labels as y
 X = features
 y = labels
+### First, explore the dataset.
+### Identify the total number of data points.
+print 'Total number of data points:',np.shape(X)[0]
+print 'Total number of features:', np.shape(X)[1]
 
 X_std = StandardScaler().fit_transform(X)
 pca = PCA(n_components=2)
