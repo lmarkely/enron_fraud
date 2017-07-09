@@ -30,7 +30,11 @@ with open("final_project_dataset.pkl", "r") as data_file:
 # Add new features: std_from_poi and std_to_poi by dividing the message
 # to/from poi by the total sent or received messages, respectively.
 data_dict.pop('TOTAL')
+missing_data = 0
 for key in data_dict:
+    for subkey in data_dict[key]:
+        if data_dict[key][subkey] == 'NaN':
+            missing_data += 1
     if (type(data_dict[key]['from_poi_to_this_person']) == int and
         type(data_dict[key]['from_messages']) == int):
         data_dict[key]['std_from_poi'] = \
@@ -80,6 +84,7 @@ print 'Total number of data points:',np.shape(X)[0]
 print 'Total number of features:', np.shape(X)[1]
 print 'Total number of data points with all zeros:',\
        len(data_dict)-np.shape(X)[0]
+print 'Total number of missing feature values:', missing_data
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
