@@ -66,7 +66,6 @@ The output of the above code is as follows.
 ```
 Total number of data points: 144
 Total number of features: 15
-
 ```
 Pairplot of the dataset shows that there are some, but weak correlation among
 the features (**Fig. 1**). Thus, all features will be used in the following
@@ -118,3 +117,13 @@ sets. Detailed discussions on repeated cross validation can be found [here](http
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%202.png)
 
 **Figure 2.** Schematic diagram of nested cross validation.
+
+The following algorithms from scikit-learn will be evaluated.
+1. Logistic Regression
+2. Random Forest Classifier
+3. K-Nearest Neighbors Classifier
+4. Support Vector Classifier
+5. Multi-Layer Perceptron Classifier
+
+We will use pipeline consisting of StandardScaler and each of the above
+algorithms in the algorithm selection and model selection.

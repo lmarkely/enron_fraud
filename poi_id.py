@@ -86,7 +86,7 @@ from sklearn.decomposition import PCA
 
 # For simplicity, rename features as X and labels as y
 X = features
-y = labels
+y = np.array(labels)
 ### First, explore the dataset.
 ### Identify the total number of data points.
 print 'Total number of data points:',np.shape(X)[0]
