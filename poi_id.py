@@ -136,10 +136,13 @@ for i in range(N_outer):
                              cv=k_fold_inner,scoring='f1')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
                                       scoring='f1'))
-print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f %s' %(np.mean(scores),
-                                                               np.std(scores),
-                                                               '%')
+print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
+                                                               np.std(scores))
 print 'Complete in %.1f sec' %(time()-t0)
+
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
 
 #Random Forest Classifier
 scores=[]
@@ -156,8 +159,8 @@ for i in range(N_outer):
                              cv=k_fold_inner,scoring='f1')
         scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
                                       scoring='f1'))
-print ('CV F1 Score of Random Forest Classifier: %.3f +/- %.3f %s'
-       %(np.mean(scores), np.std(scores), '%'))
+print ('CV F1 Score of Random Forest Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 
 
