@@ -133,10 +133,10 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
-                             cv=k_fold_inner,scoring='f1')
+                             cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
+                                      scoring='recall'))
+print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
                                                                np.std(scores))
 print 'Complete in %.1f sec' %(time()-t0)
 
@@ -156,10 +156,10 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
-                             cv=k_fold_inner,scoring='f1')
+                             cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print ('CV F1 Score of Random Forest Classifier: %.3f +/- %.3f'
+                                      scoring='recall'))
+print ('CV Recall Score of Random Forest Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 
@@ -180,10 +180,10 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
-                              cv=k_fold_inner,scoring='f1')
+                              cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print ('CV F1 Score of KNN Classifier: %.3f +/- %.3f'
+                                      scoring='recall'))
+print ('CV Recall Score of KNN Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 

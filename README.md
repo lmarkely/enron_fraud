@@ -24,7 +24,7 @@ among the features, we may return to stage 1 to reselect the feature.
 After the features are selected and engineered, nested cross validation will
 be used for algorithm selection in stage 3. Then, stage 4 identifies the
 hyperparameter values that give the best result for the selected algorithm.
-F1 score, precision and recall will be used during the algorithm
+recall score, precision and recall will be used during the algorithm
 and model selection.
 
 ## Feature Selection and Engineering
@@ -145,17 +145,17 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
-                             cv=k_fold_inner,scoring='f1')
+                             cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f %s' %(np.mean(scores),
+                                      scoring='recall'))
+print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f %s' %(np.mean(scores),
                                                                np.std(scores),
                                                                '%')
 print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of Logistic Regression: 0.240 +/- 0.204 %
+CV Recall Score of Logistic Regression: 0.240 +/- 0.204 %
 Complete in 31.9 sec
 ```
 ### Logistic Regression
@@ -177,17 +177,17 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
-                             cv=k_fold_inner,scoring='f1')
+                             cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f %s' %(np.mean(scores),
+                                      scoring='recall'))
+print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f %s' %(np.mean(scores),
                                                                np.std(scores),
                                                                '%')
 print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of Logistic Regression: 0.240 +/- 0.204 %
+CV Recall Score of Logistic Regression: 0.240 +/- 0.204 %
 Complete in 31.9 sec
 ```
 ### Logistic Regression
@@ -209,16 +209,16 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_lr = GridSearchCV(estimator=pipe_lr,param_grid=params_lr,
-                             cv=k_fold_inner,scoring='f1')
+                             cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_lr,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print 'CV F1 Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
-                                                               np.std(scores))
+                                      scoring='recall'))
+print 'CV Recall Score of Logistic Regression: %.3f +/- %.3f' %(np.mean(scores),
+                                                             np.std(scores))
 print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of Logistic Regression: 0.240 +/- 0.204
+CV Recall Score of Logistic Regression: 0.240 +/- 0.204
 Complete in 32.3 sec
 ```
 
@@ -242,16 +242,16 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_rf = GridSearchCV(estimator=pipe_rf,param_grid=params_rf,
-                             cv=k_fold_inner,scoring='f1')
+                             cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_rf,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print ('CV F1 Score of Random Forest Classifier: %.3f +/- %.3f'
+                                      scoring='recall'))
+print ('CV Recall Score of Random Forest Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of Random Forest Classifier: 0.170 +/- 0.231
+CV Recall Score of Random Forest Classifier: 0.170 +/- 0.231
 Complete in 183.9 sec
 ```
 
@@ -274,15 +274,15 @@ for i in range(N_outer):
     for j in range(N_inner):
         k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
         gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
-                              cv=k_fold_inner,scoring='f1')
+                              cv=k_fold_inner,scoring='recall')
         scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
-                                      scoring='f1'))
-print ('CV F1 Score of KNN Classifier: %.3f +/- %.3f'
+                                      scoring='recall'))
+print ('CV Recall Score of KNN Classifier: %.3f +/- %.3f'
        %(np.mean(scores), np.std(scores)))
 print 'Complete in %.1f sec' %(time()-t0)
 ```
 Output:
 ```
-CV F1 Score of KNN Classifier: 0.146 +/- 0.207
+CV Recall Score of KNN Classifier: 0.146 +/- 0.207
 Complete in 24.6 sec
 ```
