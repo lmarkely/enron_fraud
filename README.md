@@ -16,9 +16,8 @@ This project is divided into 4 main stages:
 
 Stage 1 will be performed with the help of stage 2. Stage 1 will determine the
 features that will be included for machine learning. Here, various data
-visualization techniques, including scatter plot matrix and dimensionality
-reduction (Principal Component Analysis & Linear Discriminant Analysis) will be
-used (stage 2).This visualization will help identify if there is any redundancy
+visualization techniques, including scatter plot matrix and PCA will be
+used (stage 2). This visualization will help identify if there is any redundancy
 among the features due to correlation, as well as provide some estimation on how
 the data are distributed in high dimensional space. If there are correlations
 among the features, we may return to stage 1 to reselect the feature.
