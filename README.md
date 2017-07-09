@@ -91,7 +91,8 @@ plt.show()
 Furthermore, PCA with `n_components=15` shows that to capture ~90% variance, we
 need to keep the first 8 principal components (PCs). These PCs will be used in
 the following stages. We will later compare the performance of the
-algorithm with and without PCA.  
+algorithm with and without PCA. As there is no significantly dominant PC, we
+will skip plotting the PCA here. 
 
 ```
 X_std = StandardScaler().fit_transform(X)
