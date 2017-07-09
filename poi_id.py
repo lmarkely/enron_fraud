@@ -93,7 +93,7 @@ print 'Total number of data points:',np.shape(X)[0]
 print 'Total number of features:', np.shape(X)[1]
 
 X_std = StandardScaler().fit_transform(X)
-pca = PCA(n_components=2)
+pca = PCA()
 X_pca = pca.fit_transform(X_std)
 print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
 
