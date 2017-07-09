@@ -254,3 +254,35 @@ Output:
 CV F1 Score of Random Forest Classifier: 0.170 +/- 0.231
 Complete in 183.9 sec
 ```
+
+### K-Nearest Neighbors Classifier
+The nested cross validation for K-Nearest Neighbors Classifier is
+performed as follows.
+```
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+scores=[]
+clf_knn = KNeighborsClassifier()
+pipe_knn = Pipeline([['sc',StandardScaler()],
+                     ['clf',clf_knn]])
+params_knn = {'clf__n_neighbors':np.arange(1,6)}
+t0 = time()
+for i in range(N_outer):
+    k_fold_outer = KFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        k_fold_inner = KFold(n_splits=5,shuffle=True,random_state=j)
+        gs_knn = GridSearchCV(estimator=pipe_knn,param_grid=params_knn,
+                              cv=k_fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_knn,X,y,cv=k_fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of KNN Classifier: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+```
+Output:
+```
+CV F1 Score of KNN Classifier: 0.146 +/- 0.207
+Complete in 24.6 sec
+```
