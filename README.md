@@ -89,9 +89,8 @@ plt.show()
 
 Furthermore, PCA shows that though some Principal Components (PCs), capture more
 variance than others, the highest explained ratio is only 0.34. Thus, we will
-keep all the 15 features in the following stages. At the end of stage 4, we will
-return to compare the performance of the algorithm with and without PCA.
-As there is no significantly dominant PC, we will skip plotting the PCA here.
+keep all the 15 features in the following stages. Since there is no
+significantly dominant PC, we will skip plotting the PCA here.
 
 ```
 X_std = StandardScaler().fit_transform(X)
@@ -487,7 +486,7 @@ CV Recall Score of Naive Bayes: 0.430 +/- 0.339
 Complete in 0.1 sec
 ```
 
-## Multi-Layer Perceptron
+## Multi-Layer Perceptron Classifier
 The nested cross validation for Multi-Layer Perceptron is
 performed as follows.
 ```
@@ -549,6 +548,80 @@ Complete in 589.0 sec
 CV Recall Score of MLP: 0.208 +/- 0.215
 Complete in 871.1 sec
 ```
-## AdaBoost Classifier 
+## AdaBoost Classifier
 The nested cross validation for Multi-Layer Perceptron is
 performed as follows.
+```
+#Set the number of repeats of the cross validation
+N_outer = 5
+N_inner = 5
+
+#Kernel SVC
+scores=[]
+clf_ada = AdaBoostClassifier(random_state=42)
+pipe_ada = Pipeline([['sc',StandardScaler()],
+                     ['clf',clf_ada]])
+params_ada = {'clf__n_estimators':np.arange(1,11)*10}
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ada = GridSearchCV(estimator=pipe_ada,param_grid=params_ada,
+                               cv=fold_inner,scoring='f1')
+        scores.append(cross_val_score(gs_ada,X,y,cv=fold_outer,
+                                      scoring='f1'))
+print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ada = GridSearchCV(estimator=pipe_ada,param_grid=params_ada,
+                               cv=fold_inner,scoring='precision')
+        scores.append(cross_val_score(gs_ada,X,y,cv=fold_outer,
+                                      scoring='precision'))
+print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+
+t0 = time()
+for i in range(N_outer):
+    fold_outer = StratifiedKFold(n_splits=5,shuffle=True,random_state=i)
+    for j in range(N_inner):
+        fold_inner = StratifiedKFold(n_splits=5,shuffle=True,random_state=j)
+        gs_ada = GridSearchCV(estimator=pipe_ada,param_grid=params_ada,
+                               cv=fold_inner,scoring='recall')
+        scores.append(cross_val_score(gs_ada,X,y,cv=fold_outer,
+                                      scoring='recall'))
+print ('CV F1 Score of AdaBoost: %.3f +/- %.3f'
+       %(np.mean(scores), np.std(scores)))
+print 'Complete in %.1f sec' %(time()-t0)
+```
+Output:
+```
+CV F1 Score of AdaBoost: 0.269 +/- 0.222
+Complete in 40.0 sec
+CV F1 Score of AdaBoost: 0.224 +/- 0.227
+Complete in 40.0 sec
+CV F1 Score of AdaBoost: 0.233 +/- 0.226
+Complete in 40.8 sec
+```
+The above results show that Logistic Regression has the best combination of F1
+score, precision, and recall. Gaussian Naive Bayes has higher recall score than
+Logistic Regression, but it has lower precision score. Since, precision and
+recall scores of Logistic regression cover 0.3, minimum criterion for this
+project, Logistic Regression is chosen for model selection. Moreover, similar
+pipeline consisting of StandardScaler, PCA, and classifier was assessed in
+parallel, but did not perform better than the current setup. These data are not
+presented here, but can be found in the Jupyter Notebook
+'Enron_fraud-PCA.ipynb'. Similarly, a pipeline consisting of MinMaxScaler,
+SelectKBest, and classifier also did not perform better than the current setup.
+These data can be found in the Jupyter Notebook 'Enron_fraud-SKB.ipynb'. As an
+alternative to StratifiedKFold with shuffle, StratifiedShuffleSplit was
+evaluated. Similar to the other alternatives, this option did not perform better
+than the current setup. Thus, the current setup with Logistic Regression is
+chosen for the next step.
