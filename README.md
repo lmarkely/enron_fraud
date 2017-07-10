@@ -833,14 +833,7 @@ indeed POI (Person of Interest). Precision of 0.34 means that from all the
 suspects that the algorithm predicts as POI, 0.34 of those people are indeed
 POI. Algorithms that have high precision may tend to have low recall and vice
 versa. To balance these two metrics, we can use F1 score, which is a harmonic
-mean of these two metrics. While there is room for improvement for these scores,
-such as using more refined hyperparameter value ranges, getting more data and
-without missing feature values, out of curiosity, I would like to assess how
-good this recall value compared with random coin toss using back of the
-envelope calculation. If we were to predict the POI by random coin toss, the
-probability that we will do better than this algorithm is approximately
-
-which is significantly lower than 0.38 (note: 0.38 x18 ~ 7).
+mean of these two metrics. 
 
 ## References
 * Python Machine Learning by Sebasitan Raschka
