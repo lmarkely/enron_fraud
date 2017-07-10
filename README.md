@@ -733,3 +733,130 @@ permutations of data splitting.
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%203.png)
 
 ## Udacity Project Questions
+**Q:** Summarize for us the goal of this project and how machine learning is useful
+in trying to accomplish it. As part of your answer, give some background on the
+dataset and how it can be used to answer the project question. Were there
+any outliers in the data when you got it, and how did you handle those?
+
+**A:** The goal is to build a classifier to predict the employees who are
+involved in Enron fraud case given the financial and email data. The input data
+are these dataset, and the output data is whether the employee may
+be involved oin the fraud case. Some characteristics about the dataset is
+provided by poi_id.py and is summarized below. There are a few outliers.
+One of them is the data for 'Total', which sums the
+data of everyone in the dataset. This was removed from the analysis. While the
+other outliers are not removed as they may correspond to those who are involved
+in the fraud.
+```
+Total number of data points: 144
+Total number of features: 15
+Total number of data points with all zeros: 1
+Total number of missing feature values: 1352
+Total number of POI: 18
+Total number of non-POI 126
+```
+**Q:** What features did you end up using in your POI identifier, and what
+selection process did you use to pick them? Did you have to do any scaling?
+Why or why not? As part of the assignment, you should attempt to engineer your
+own feature that does not come ready-made in the dataset -- explain what feature
+you tried to make, and the rationale behind it. (You do not necessarily have to
+use it in the final analysis, only engineer and test it.) In your feature
+selection step, if you used an algorithm like a decision tree, please also give
+the feature importances of the features that you use, and if you used an
+automated feature selection function like SelectKBest, please report the feature
+scores and reasons for your choice of parameter values.
+
+**A:** The features used are 'salary', 'deferral_payments','loan_advances',
+'bonus', 'restricted_stock_deferred', 'deferred_income', 'expenses',
+'exercised_stock_options', 'other', 'long_term_incentive', 'restricted_stock', 'director_fees','shared_receipt_with_poi', 'std_from_poi','std_to_poi'. The
+rationale is described in detail above. Briefly, features that are sum of other
+features are removed to minimize redundancy and correlation among features. In
+addition, email address is removed as we are interested in quantitative input
+data. Furthermore, new features, 'std_from_poi' and 'std_to_poi', are created
+by dividing received and sent email messages to poi by total received and sent
+messages. Decision Tree was not used as it is prone to overfitting. Instead,
+Random Forest, which is a bagging version of Decision Tree ([ref](https://sebastianraschka.com/faq/docs/bagging-boosting-rf.html)) was
+used in an attempt to avoid overfitting. SelectKBest was not used as it did not
+improved the performance of the algorithm in this case.
+
+**Q:** What algorithm did you end up using? What other one(s) did you try?
+How did model performance differ between algorithms?
+
+**A:** Logistic regression was chosen. Other algorithms evaluated include
+KNNClassifier, RandomForestClassifier, AdaBoostClassifier, Linear SVC, Kernel
+SVC, MLPClassifier, and GaussianNB. Logistic Regression has the best combination
+of F1 score, precision, and recall. GaussianNB has higher recall score than
+Logistic Regression during algorithm selection, but it has lower precision
+score. The other algorithms have lower F1 score, precision, and recall than
+Logistic Regression for this dataset.
+
+**Q:** What does it mean to tune the parameters of an algorithm, and what can
+happen if you don’t do this well?  How did you tune the parameters of your
+particular algorithm? What parameters did you tune? (Some algorithms do not
+have parameters that you need to tune -- if this is the case for the one you
+picked, identify and briefly explain how you would have done it for the model
+that was not your final choice or a different model that does utilize parameter
+tuning, e.g. a decision tree classifier).
+
+**A:** The parameters tuned in this project are regularization parameters. These
+parameters control the complexity of the algorithm. If we do not tune it well,
+the algorithm may suffer from high bias (model is unable to capture and fit the
+complexity of the data) or high variance (model is overly complicated and can't
+generalize to unseen dataset). The parameters were tuned using nested cross
+validation, in which the data set are split into training, validation, and test
+set. Training and validation sets are used by GridSearchCV to obtain the best
+parameters, and test set is used to test the generalization of the algorithm.
+This tuning is iterated over different splitting of training, validation, and
+test sets.
+
+**Q:** What is validation, and what’s a classic mistake you can make if you do
+it wrong? How did you validate your analysis?
+
+**A:** In validation, we test the model to confirm that it can fit unseen data
+at a reasonable rate. The is repeated nested cross validation as described in the
+previous question, or using simpler methods, such as nested cross validation or
+cross validation without repeat. There are also variation in the way the
+algorithm splits the data, such as KFold, StratifiedShuffleSplit,
+StratifiedKFold, etc. To validate our analysis, metrics, such as accuracy, F1
+score, precision, recall, etc are used to obtain quantitative assessment on the
+algorithm.
+
+**Q:** Give at least 2 evaluation metrics and your average performance for each
+of them.  Explain an interpretation of your metrics that says something
+human-understandable about your algorithm’s performance.
+
+**A:** F1 score, precision, and recall are used as the metrics. The average
+performance for F1 score is 0.33, precision is 0.34, and recall is 0.38. Recall
+of 0.38 means that given a group of suspects being evaluated,
+the algorithm can correctly predict 0.38 of the total number of suspects who are
+indeed POI (Person of Interest). Precision of 0.34 means that from all the
+suspects that the algorithm predicts as POI, 0.34 of those people are indeed
+POI. Algorithms that have high precision may tend to have low recall and vice
+versa. To balance these two metrics, we can use F1 score, which is a harmonic
+mean of these two metrics.
+
+## References
+* Python Machine Learning by Sebasitan Raschka
+([URL](https://sebastianraschka.com/books.html)):
+reference for implementing nested cross validation and pipeline,
+as well as Machine Learning in general.
+* https://sebastianraschka.com/faq/docs/bagging-boosting-rf.html: reference for
+bagging, bossting, and Random Forest.
+* [Scikit-learn](http://scikit-learn.org/):
+reference for implementing machine learning algorithms.
+* [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html):
+reference for implementing Seaborn.
+* https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf:
+reference for repeated nested cross validation and repeated cross validation.
+* (https://en.wikipedia.org/wiki/Enron_scandal): reference for Enron scandal.
+“I hereby confirm that this submission is my work.
+I have cited above the origins of any parts of the submission that were taken
+from Websites, books, forums, blog posts, github repositories, etc."
+
+## Notes
+* poi_id.py should be used to generate my_classifier.pkl, my_dataset.pkl,
+my_feature_list.pkl, as well as the answers to the questions listed in the
+following section.
+* poi_id_modified.py provides the codes for all the steps described in details
+below.
+* Environment file: enron_fraud.yaml

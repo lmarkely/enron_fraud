@@ -85,6 +85,8 @@ print 'Total number of features:', np.shape(X)[1]
 print 'Total number of data points with all zeros:',\
        len(data_dict)-np.shape(X)[0]
 print 'Total number of missing feature values:', missing_data
+print 'Total number of POI:', sum(labels)
+print 'Total number of non-POI', np.shape(X)[0] - sum(labels)
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project
