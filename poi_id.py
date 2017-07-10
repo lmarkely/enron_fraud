@@ -12,11 +12,8 @@ from tester import dump_classifier_and_data
 ### The first feature must be "poi".
 ### Include all quantitative features. In addition, 'std_from_poi' and
 ### 'std_to_poi' are standardized feature (see details below).
-features_list = ['poi','salary', 'deferral_payments',
-                 'loan_advances', 'bonus', 'restricted_stock_deferred',
-                 'deferred_income', 'expenses',
-                 'exercised_stock_options', 'other', 'long_term_incentive',
-                 'restricted_stock', 'director_fees','shared_receipt_with_poi',
+features_list = ['poi','salary','bonus','expenses','exercised_stock_options',
+                 'other','restricted_stock', 'shared_receipt_with_poi',
                  'std_from_poi','std_to_poi']
 
 ### Load the dictionary containing the dataset
@@ -30,6 +27,7 @@ with open("final_project_dataset.pkl", "r") as data_file:
 # Add new features: std_from_poi and std_to_poi by dividing the message
 # to/from poi by the total sent or received messages, respectively.
 data_dict.pop('TOTAL')
+data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
 missing_data = 0
 feature_zeros = {}
 for key in data_dict:
