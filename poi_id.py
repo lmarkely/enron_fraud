@@ -31,9 +31,11 @@ with open("final_project_dataset.pkl", "r") as data_file:
 # to/from poi by the total sent or received messages, respectively.
 data_dict.pop('TOTAL')
 missing_data = 0
+feature_zeros = {}
 for key in data_dict:
     for subkey in data_dict[key]:
         if data_dict[key][subkey] == 'NaN':
+            feature_zeros[subkey] = feature_zeros.get(subkey,0)+1
             missing_data += 1
     if (type(data_dict[key]['from_poi_to_this_person']) == int and
         type(data_dict[key]['from_messages']) == int):
@@ -87,6 +89,7 @@ print 'Total number of data points with all zeros:',\
 print 'Total number of missing feature values:', missing_data
 print 'Total number of POI:', sum(labels)
 print 'Total number of non-POI', np.shape(X)[0] - sum(labels)
+print feature_zeros
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall
 ### using our testing script. Check the tester.py script in the final project

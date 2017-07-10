@@ -28,14 +28,17 @@ recall score, precision and recall will be used during the algorithm
 and model selection.
 
 ## Feature Selection and Engineering
-First, the row corresponding to 'TOTAL' as we are interested in the data of
-individuals. In addition, 'total_payments' and 'total_stock_values' are removed
+First, the row corresponding to 'TOTAL' and 'THE TRAVEL AGENCY IN THE PARK'
+are removed as we are interested in the data of individuals. In addition,
+'LOCKHART EUGENE E' has all zero feature values. So, this is also removed.
+Moreover, 'total_payments' and 'total_stock_values' are removed
 as they are aggregate of other features. Moreover, 'to_messages',
 'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi' are not included. Instead, they are standardized to 'std_from_poi' and 'std_to_poi'. These steps are captured in the following
 codes.
 
 ```
 data_dict.pop('TOTAL')
+data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
 for key in data_dict:
     if (type(data_dict[key]['from_poi_to_this_person']) == int and
         type(data_dict[key]['from_messages']) == int):
@@ -833,7 +836,7 @@ indeed POI (Person of Interest). Precision of 0.34 means that from all the
 suspects that the algorithm predicts as POI, 0.34 of those people are indeed
 POI. Algorithms that have high precision may tend to have low recall and vice
 versa. To balance these two metrics, we can use F1 score, which is a harmonic
-mean of these two metrics. 
+mean of these two metrics.
 
 ## References
 * Python Machine Learning by Sebasitan Raschka
