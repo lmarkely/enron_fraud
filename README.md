@@ -840,8 +840,6 @@ good this recall value compared with random coin toss using back of the
 envelope calculation. If we were to predict the POI by random coin toss, the
 probability that we will do better than this algorithm is approximately
 
-![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Calculation.png)
-
 which is significantly lower than 0.38 (note: 0.38 x18 ~ 7).
 
 ## References
