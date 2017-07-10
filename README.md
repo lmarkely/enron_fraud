@@ -842,7 +842,7 @@ probability that we will do better than this algorithm is approximately
 
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Calculation.png)
 
-which is significantly lower than 0.38.
+which is significantly lower than 0.38 (note: 0.38 x18 ~ 7).
 
 ## References
 * Python Machine Learning by Sebasitan Raschka
