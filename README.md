@@ -1,4 +1,4 @@
-# Enron Fraud project
+# Enron Fraud Project
 
 Enron was one of the largest companies in the US. It went into bankruptcy due to corporate fraud. A significant amount of Enron data (emails
 and financial data) were entered into public record as a result of Federal
