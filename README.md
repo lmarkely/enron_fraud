@@ -2,8 +2,8 @@
 
 Enron was one of the largest companies in the US. It went into bankruptcy due to corporate fraud. A significant amount of Enron data (emails
 and financial data) were entered into public record as a result of Federal
-investigation. This project aims to build machine learning algorithm to
-identify Enron employees who may have committed fraud based on the public Enron
+investigation. This project aims to build a classifier that can
+predict Enron employees involved fraud based on the public Enron
 financial and email dataset. More details about Enron scandal can be found on
 [Wikipedia](https://en.wikipedia.org/wiki/Enron_scandal).
 
@@ -14,107 +14,42 @@ This project is divided into 4 main stages:
 3. Algorithm selection
 4. Model selection
 
-Stage 1 will be performed with the help of stage 2. Stage 1 will determine the
-features that will be included for machine learning. Here, various data
-visualization techniques, including scatter plot matrix and PCA will be
-used (stage 2). This visualization will help identify if there is any redundancy
-among the features due to correlation, as well as provide some estimation on how
-the data are distributed in high dimensional space. If there are correlations
-among the features, we may return to stage 1 to reselect the feature.
-After the features are selected and engineered, nested cross validation will
-be used for algorithm selection in stage 3. Then, stage 4 identifies the
-hyperparameter values that give the best result for the selected algorithm.
-recall score, precision and recall will be used during the algorithm
-and model selection.
-
 ## Feature Selection and Engineering
-First, the row corresponding to 'TOTAL' and 'THE TRAVEL AGENCY IN THE PARK'
-are removed as we are interested in the data of individuals. In addition,
-'LOCKHART EUGENE E' has all zero feature values. So, this is also removed.
-Moreover, 'total_payments' and 'total_stock_values' are removed
-as they are aggregate of other features. Moreover, 'to_messages',
-'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi' are not included. Instead, they are standardized to 'std_from_poi' and 'std_to_poi'. These steps are captured in the following
-codes.
+First, the data are cleaned up; the data corresponding to 'TOTAL' and
+'THE TRAVEL AGENCY IN THE PARK' are removed as we are interested in the data of individuals. In addition, 'LOCKHART EUGENE E' data have all zero feature values
+and is also removed.
 
-```
-data_dict.pop('TOTAL')
-data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
-for key in data_dict:
-    if (type(data_dict[key]['from_poi_to_this_person']) == int and
-        type(data_dict[key]['from_messages']) == int):
-        data_dict[key]['std_from_poi'] = \
-        (data_dict[key]['from_poi_to_this_person']/
-         data_dict[key]['from_messages'])
-    else:
-        data_dict[key]['std_from_poi'] = 0
-    if (type(data_dict[key]['from_this_person_to_poi']) == int and
-        type(data_dict[key]['to_messages']) == int):
-        data_dict[key]['std_to_poi'] = \
-        (data_dict[key]['from_this_person_to_poi']/
-         data_dict[key]['to_messages'])
-    else:
-        data_dict[key]['std_to_poi'] = 0
-```
+Some features are also removed. 'total_payments' and 'total_stock_values' are removed
+as they are aggregate of other features. Moreover, 'to_messages',
+'email_address', 'from_poi_to_this_person', 'from_messages', and 'from_this_person_to_poi' are replaced by two engineered features:
+'std_from_poi' and 'std_to_poi', obtained from 'from_poi_to_this_person'/
+'from_messages' and 'from_this_person_to_poi'/'to_messages', respectively.
+
+In addition, features that have more 70 zero values
+are removed. 70 was chosen as the cutoff because there are 141 data points in this
+data set after the above feature selection and engineering. These features
+include 'deferral_payments', 'long_term_incentive', 'loan_advances', 'restricted_stock_deferred', 'deferred_income', and 'director_fees'.
+
+Furthermore, PCA and SelectKBest are evaluated for dimensionality reduction and
+feature selection methods. In this case, SelectKBest is chosen due to better
+performance in algorithm selection. Detailed algorithm selection without PCA and
+SelectKBest can be found in 'Enron_fraud.ipynb', with SelectKBest in
+'Enron_fraud-SKB.ipynb', and with PCA in 'Enron_fraud-PCA.ipynb'.
 
 ## Data Visualization
-First, a quick data exploration shows the followings.
-```
-### First, explore the dataset.
-### Identify the total number of data points.
-print 'Total number of data points:',np.shape(X)[0]
-print 'Total number of features:', np.shape(X)[1]
-```
+A pairplot of the dataset shows that there are some,
+but weak correlation among the features (**Fig. 1**).
+Thus, all features will be used in the following steps.
 
-The output of the above code is as follows.
-```
-Total number of data points: 144
-Total number of features: 15
-```
-Pairplot of the dataset shows that there are some, but weak correlation among
-the features (**Fig. 1**). Thus, all features will be used in the following
-steps.
 
-![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%201.png)
 
-**Figure 1.** Pairplot of all features of Enron dataset.
+**Figure 1.** [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html) Pairplot of selected and engineered features.
 
-This plot is generated using [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html).
-```
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plt
-df = pd.DataFrame(X_std)
-pg = sns.PairGrid(df)
-pg.map_diag(plt.hist)
-pg.map_offdiag(plt.scatter)
-plt.show()
-```
-
-Furthermore, PCA shows that though some Principal Components (PCs), capture more
-variance than others, the highest explained ratio is only 0.34. Thus, we will
-keep all the 15 features in the following stages. Since there is no
-significantly dominant PC, we will skip plotting the PCA here.
-
-```
-X_std = StandardScaler().fit_transform(X)
-pca = PCA(n_components=15)
-X_pca = pca.fit_transform(X_std)
-print 'PCA explained_variance_ratio_', pca.explained_variance_ratio_
-```
-
-Output:
-```
-PCA explained_variance_ratio_ [ 0.34010581  0.12119602  0.104491    0.08764263  0.06768687  0.05239806
-  0.0467082   0.04564431  0.03765439  0.03034863  0.02354492  0.01881022
-  0.01624238  0.00752657  0.        ]
-```
 ## Algorithm Selection
-Here, we will use repeated nested cross validation to choose the machine
-learning algorithm. We are using nested cross validation in order to test how
-each algorithm perform towards unseen data (**Fig. 2**). Furthermore, we are
-using repeated instead of unrepeated nested cross validation in order to avoid
-any bias due to the different combination of training, validation, and test
-sets. Detailed discussions on repeated cross validation can be found [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf).
+Repeated nested cross validation is used for algorithm selection (**Fig. 2**).
+Furthermore, repeated instead of unrepeated nested cross validation is used
+to minimize influence from different splitting of training, validation, and test
+sets on algorithm selection as described in [previous study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf).
 
 ![Plot](https://github.com/lmarkely/enron_fraud/blob/master/Fig%202.png)
 
