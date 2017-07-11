@@ -10,9 +10,8 @@ financial and email dataset. More details about Enron scandal can be found on
 ## Workflow
 This project is divided into 4 main stages:
 1. Feature selection and engineering
-2. Data visualization
-3. Algorithm selection
-4. Model selection
+2. Algorithm selection
+3. Model selection
 
 ## Feature Selection and Engineering
 First, the data are cleaned up; the data corresponding to 'TOTAL' and
@@ -28,22 +27,31 @@ as they are aggregate of other features. Moreover, 'to_messages',
 In addition, features that have more 70 zero values
 are removed. 70 was chosen as the cutoff because there are 141 data points in this
 data set after the above feature selection and engineering. These features
-include 'deferral_payments', 'long_term_incentive', 'loan_advances', 'restricted_stock_deferred', 'deferred_income', and 'director_fees'.
+include 'deferral_payments', 'long_term_incentive', 'loan_advances', 'restricted_stock_deferred', 'deferred_income', and 'director_fees'. After these
+feature selection and engineering, there are a total of 9 features.
 
 Furthermore, PCA and SelectKBest are evaluated for dimensionality reduction and
 feature selection methods. In this case, SelectKBest is chosen due to better
 performance in algorithm selection. Detailed algorithm selection without PCA and
 SelectKBest can be found in 'Enron_fraud.ipynb', with SelectKBest in
-'Enron_fraud-SKB.ipynb', and with PCA in 'Enron_fraud-PCA.ipynb'.
+'Enron_fraud-SKB.ipynb', and with PCA in 'Enron_fraud-PCA.ipynb'. The F score
+and p-value from SelectKBest suggest that only 'exercised_stock_options' and
+'bonus' are significant, while others with p-value > 0.05 and F score
+significantly lower than these two features will not be used for algorithm
+selection and model selection.
+
+![Plot](Fig%201.png)
+
+**Figure 1.** F score and p-value from SelectKBest.
 
 ## Data Visualization
 A pairplot of the dataset shows that there are some,
-but weak correlation among the features (**Fig. 1**).
+but weak correlation among the features (**Fig. 2**).
 Thus, all features will be used in the following steps.
 
 
-
-**Figure 1.** [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html) Pairplot of selected and engineered features.
+![Plot](Fig%202.png)
+**Figure 2.** [Seaborn](http://seaborn.pydata.org/generated/seaborn.pairplot.html) Pairplot of selected and engineered features.
 
 ## Algorithm Selection
 Repeated nested cross validation is used for algorithm selection (**Fig. 2**).
