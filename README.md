@@ -88,15 +88,11 @@ in trying to accomplish it. As part of your answer, give some background on the
 dataset and how it can be used to answer the project question. Were there
 any outliers in the data when you got it, and how did you handle those?
 
-**A:** The goal is to build a classifier to predict the employees who are
-involved in Enron fraud case given the financial and email data. The input data
-are these dataset, and the output data is whether the employee may
-be involved oin the fraud case. Some characteristics about the dataset is
-provided by poi_id.py and is summarized below. There are a few outliers.
-One of them is the data for 'Total', which sums the
-data of everyone in the dataset. This was removed from the analysis. While the
-other outliers are not removed as they may correspond to those who are involved
-in the fraud.
+**A:** The goal is to build a classifier to predict the employees
+involved in Enron fraud case (POI) given the financial and email data.
+Some characteristics about the dataset is provided by poi_id.py and is
+summarized below.
+
 ```
 Total number of data points: 141
 Total number of features: 9 before SelectKBest, 2 after SelectKBest
@@ -105,6 +101,39 @@ Total number of missing feature values: 1334 (after feature selection & engineer
 Total number of POI: 18
 Total number of non-POI 123
 ```
+
+This summary shows that the dataset is imbalanced, there are much less POI than
+non-POI. Due to this imbalance, StratifiedKFold is used to ensure similar
+distribution of POI vs non-POI in training, validation, and test sets. In
+addition, a few outliers that were removed
+include 'TOTAL', 'THE TRAVEL AGENCY IN THE PARK', and 'LOCKHART EUGENE E'. The
+first is the sum of all data, the second is not a person, and the third has all
+zero values. Moreover, the data also have features with a lot of missing values.
+The followings are summary of number of missing values for each feature.
+
+```
+'loan_advances': 141
+'director_fees': 128
+'restricted_stock_deferred': 127
+'deferral_payments': 106
+'deferred_income': 96
+'long_term_incentive': 79
+'bonus': 63
+'shared_receipt_with_poi': 58
+'from_poi_to_this_person': 58
+'to_messages': 58
+'from_messages': 58
+'from_this_person_to_poi': 58
+'salary': 50
+'other': 53
+'expenses': 50
+'exercised_stock_options': 43
+'restricted_stock': 35
+'email_address': 33
+'total_payments': 21
+'total_stock_value': 19
+```
+
 **Q:** What features did you end up using in your POI identifier, and what
 selection process did you use to pick them? Did you have to do any scaling?
 Why or why not? As part of the assignment, you should attempt to engineer your
@@ -116,29 +145,39 @@ the feature importances of the features that you use, and if you used an
 automated feature selection function like SelectKBest, please report the feature
 scores and reasons for your choice of parameter values.
 
-**A:** The features used are 'salary', 'deferral_payments','loan_advances',
-'bonus', 'restricted_stock_deferred', 'deferred_income', 'expenses',
-'exercised_stock_options', 'other', 'long_term_incentive', 'restricted_stock', 'director_fees','shared_receipt_with_poi', 'std_from_poi','std_to_poi'. The
-rationale is described in detail above. Briefly, features that are sum of other
+**A:** The features used are 'exercised_stock_options' and 'bonus'.
+In feature selection process, features that are sum of other
 features are removed to minimize redundancy and correlation among features. In
 addition, email address is removed as we are interested in quantitative input
 data. Furthermore, new features, 'std_from_poi' and 'std_to_poi', are created
 by dividing received and sent email messages to poi by total received and sent
-messages. Decision Tree was not used as it is prone to overfitting. Instead,
+messages. However, scores from SelectKBest suggest that the above two features
+are the signficant features using p-value < 0.05 cutoff.
+
+Feature scaling was used because each feature has different value ranges. Without
+scaling, features with high value and/or variance may dominate over features
+with low value and/or variance. For SelectKBest, MinMaxScaler was used for
+feature scaling. Feature scores from SelectKBest is provided in Fig. 1. Features
+with p-value were selected for algorithm and model selection. The figure also
+shows that the new engineered features 'std_from_poi' and 'std_to_poi' have
+significantly lower F Score (1.7 and 1.2) than the top two features (6.7 and 5.0).
+Moreover, the p-value of these engineered features are very high at 0.19 and 0.27,
+suggesting that these features are not significant in the classification.
+Decision Tree was not used as it is prone to overfitting. Instead,
 Random Forest, which is a bagging version of Decision Tree ([ref](https://sebastianraschka.com/faq/docs/bagging-boosting-rf.html)) was
-used in an attempt to avoid overfitting. SelectKBest was not used as it did not
-improved the performance of the algorithm in this case.
+used in an attempt to avoid overfitting.
 
 **Q:** What algorithm did you end up using? What other one(s) did you try?
 How did model performance differ between algorithms?
 
-**A:** Logistic regression was chosen. Other algorithms evaluated include
-KNNClassifier, RandomForestClassifier, AdaBoostClassifier, Linear SVC, Kernel
-SVC, MLPClassifier, and GaussianNB. Logistic Regression has the best combination
-of F1 score, precision, and recall. GaussianNB has higher recall score than
-Logistic Regression during algorithm selection, but it has lower precision
-score. The other algorithms have lower F1 score, precision, and recall than
-Logistic Regression for this dataset.
+**A:** KNN Classifier was chosen. Other algorithms evaluated include
+Logistic Regression, RandomForestClassifier, AdaBoostClassifier, Linear SVC, Kernel
+SVC, MLPClassifier, and GaussianNB. KNN Classifier has the highest F1 score,
+precision, and recall among all algorithms evaluated. There is no clear pattern
+among different algorithm performance. One interesting observation is that
+implementing SelectKBest significantly improve the performance of most of the
+algorithm, except Logistic Regression and Linear SVC. The performance of KNN
+was significantly improved by SelectKBest.
 
 **Q:** What does it mean to tune the parameters of an algorithm, and what can
 happen if you don’t do this well?  How did you tune the parameters of your
@@ -150,9 +189,8 @@ tuning, e.g. a decision tree classifier).
 
 **A:** The parameters tuned in this project are regularization parameters. These
 parameters control the complexity of the algorithm. If we do not tune it well,
-the algorithm may suffer from high bias (model is unable to capture and fit the
-complexity of the data) or high variance (model is overly complicated and can't
-generalize to unseen dataset). The parameters were tuned using nested cross
+the algorithm may suffer from high bias (underfitting) or high variance
+(overfitting). The parameters were tuned using nested cross
 validation, in which the data set are split into training, validation, and test
 set. Training and validation sets are used by GridSearchCV to obtain the best
 parameters, and test set is used to test the generalization of the algorithm.
@@ -162,14 +200,17 @@ test sets.
 **Q:** What is validation, and what’s a classic mistake you can make if you do
 it wrong? How did you validate your analysis?
 
-**A:** In validation, we test the model to confirm that it can fit unseen data
-at a reasonable rate. The is repeated nested cross validation as described in the
-previous question, or using simpler methods, such as nested cross validation or
-cross validation without repeat. There are also variation in the way the
-algorithm splits the data, such as KFold, StratifiedShuffleSplit,
-StratifiedKFold, etc. To validate our analysis, metrics, such as accuracy, F1
-score, precision, recall, etc are used to obtain quantitative assessment on the
-algorithm.
+**A:** In cross validation, we split the dataset into test set and training set.
+The model is trained on the training set and then tested on test set. This
+splitting is done so that the model never sees the test set while training. It
+is critical that there is no leaking of information from the test set to the
+training of the model. Otherwise, we will have an overfitting model. The classic
+mistake is to train and test the model on the same set of data. We may get high
+performance score, but poor performance score when we use the model on a
+completely new dataset. This is an example of overfitting problem. To validate
+our analysis, we use metrics, such as accuracy, F1
+score, precision, recall, etc to obtain quantitative assessment on the
+algorithm performance.
 
 **Q:** Give at least 2 evaluation metrics and your average performance for each
 of them.  Explain an interpretation of your metrics that says something
