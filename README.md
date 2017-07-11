@@ -89,7 +89,6 @@ SelectKBest.
 
 ## Model Selection
 
-
 The results of the hyperparameter C tuning is presented in **Table 1**.The first column corresponds to the best C values selected in 1000 permutations of data splitting. The second column corresponds to the number of times each C value was
 selected as the best hyperparameter value. The third column, corresponds to the
 mean of either F1 score, precision, or recall when the corresponding C value was
@@ -270,6 +269,6 @@ from Websites, books, forums, blog posts, github repositories, etc."**
 * poi_id.py should be used to generate my_classifier.pkl, my_dataset.pkl,
 my_feature_list.pkl, as well as the answers to the questions listed in the
 following section.
-* poi_id_modified.py provides the codes for all the steps described in details
-below.
+* The Jupyter notebooks provide the codes for all the steps described in details
+above.
 * Environment file: enron_fraud.yaml
