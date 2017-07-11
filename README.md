@@ -198,14 +198,17 @@ messages.
 Feature scaling was used because each feature has different value ranges. Without
 scaling, features with high values and/or variances may dominate over features
 with low value and/or variance. For SelectKBest, MinMaxScaler was used for
-feature scaling. Feature scores from SelectKBest is also provided in **Fig.1**.
+feature scaling. Feature scores from SelectKBest is also provided in **Fig. 1**.
 Features with p-value < 0.05 were selected for algorithm and model selection.
 The figure also shows that the new engineered features 'std_from_poi' and
 'std_to_poi' have significantly lower F Score (1.7 and 1.2) than the top two
 features (6.7 and 5.0). Moreover, the p-value of these engineered features are
 very high at 0.19 and 0.27, suggesting that these features may not be
-significant in the classification. Decision Tree was not used as it is prone to
-overfitting. Instead,Random Forest, which is a bagging version of 
+significant in the classification. The choice of k = 2 was further evaluated later
+in the project by analyzing the effect of varying k value on F1 score, precision, 
+and recall (**Fig. 2**), in which k = 2 gave the highest scores.
+Decision Tree was not used as it is prone to overfitting. Instead, Random Forest, 
+which is a bagging version of 
 Decision Tree ([ref](https://sebastianraschka.com/faq/docs/bagging-boosting-rf.html)) and
 AdaBoostClassifier with Decision Tree as the base classifier, a boosting version of
 Decision Tree were used in an attempt to avoid overfitting.
