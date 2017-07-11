@@ -82,7 +82,7 @@ The following algorithms from scikit-learn are evaluated.
 There are 3 types of pipelines evaluated. The first includes StandardScaler and
 the classifier (**Fig. 4**). The second includes StandardScaler, PCA, and the
 classifier (**Fig. 5**). The third includes MinMaxScaler, SelectKBest, and the
-clasifier (**Fig. 6**). Overall, KNN Classifier with the third pipeline has the best average
+classifier (**Fig. 6**). Overall, KNN Classifier with the third pipeline has the best average
 F1 score (0.35), precision (0.43), and recall (0.4) in the repeated nested
 cross validation.
 
