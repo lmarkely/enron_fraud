@@ -70,7 +70,22 @@ the classifier (**Fig. 3**). The second includes StandardScaler, PCA, and the
 classifier (**Fig. 4**). The third includes MinMaxScaler, SelectKBest, and the
 clasifier. Overall, KNN Classifier with the third pipeline has the best average
 F1 score (0.35), precision (0.43), and recall (0.4) in the repeated nested
-cross validation. 
+cross validation.
+
+![Plot](Fig%203.png)
+
+**Figure 3.** F1 score, precision, and recall in algorithm selection without
+PCA or SelectKBest.
+
+![Plot](Fig%204.png)
+
+**Figure 4.** F1 score, precision, and recall in algorithm selection with
+PCA.
+
+![Plot](Fig%205.png)
+
+**Figure 5.** F1 score, precision, and recall in algorithm selection with
+SelectKBest.
 
 ## Model Selection
 
