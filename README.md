@@ -129,6 +129,7 @@ The output from tester.py for final evaluation of the model
 is below.
 
 ![Plot](tester.py%20output.png)
+
 **Figure 7.** Output from tester.py shows the F1 score, precision, and recall of 
 the classifier.
 
