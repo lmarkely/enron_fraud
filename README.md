@@ -1,5 +1,8 @@
 # Enron Fraud Project
 
+![Plot](Enron_Complex.jpg)
+Enron Complex in Houston - [Source](https://www.flickr.com/photos/23094783@N03)
+
 Enron was one of the largest companies in the US. It went into bankruptcy due to corporate fraud. A significant amount of Enron data (emails
 and financial data) were entered into public record as a result of Federal
 investigation. This project aims to build a classifier that can
