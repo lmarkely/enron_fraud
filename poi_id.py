@@ -70,9 +70,12 @@ labels, features = targetFeatureSplit(data)
 #    hyperparameter values
 #The following codes will provide only the final answers. Please refer to
 #poi_id_modified.py or Enron_fraud.ipynb for all the codes used in this project.
-from sklearn.linear_model import LogisticRegression
+
+from sklearn.feature_selection import SelectKBest
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.feature_selection import chi2
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 # For simplicity, rename features as X and labels as y
@@ -96,10 +99,11 @@ print feature_zeros
 ### stratified shuffle split cross validation. For more info:
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
-clf_lr = LogisticRegression(penalty='l2',C=0.0001)
-pipe_lr = Pipeline([['sc',StandardScaler()],
-                    ['clf',clf_lr]])
-clf = pipe_lr
+clf_knn = KNeighborsClassifier(n_neighbors=5)
+pipe_knn = Pipeline([['sc',MinMaxScaler()],
+                     ['kbest',SelectKBest(chi2,k=2)],
+                     ['clf',clf_knn]])
+clf = pipe_knn
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
