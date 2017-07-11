@@ -24,10 +24,11 @@ as they are aggregate of other features. Moreover, 'to_messages',
 'std_from_poi' and 'std_to_poi', obtained from 'from_poi_to_this_person'/
 'from_messages' and 'from_this_person_to_poi'/'to_messages', respectively.
 
-In addition, features that have more 70 zero values
-are removed. 70 was chosen as the cutoff because there are 141 data points in this
-data set after the above feature selection and engineering. These features
-include 'deferral_payments', 'long_term_incentive', 'loan_advances', 'restricted_stock_deferred', 'deferred_income', and 'director_fees'. After these
+In addition, features that have more than 70 zero values
+are removed. These features
+include 'deferral_payments', 'long_term_incentive', 'loan_advances', 'restricted_stock_deferred', 'deferred_income', and 'director_fees'.
+70 was chosen as the cut-off value because there are 141 data points in this
+data set after the above feature selection and engineering. After these
 feature selection and engineering, there are a total of 9 features.
 
 Furthermore, PCA and SelectKBest are evaluated for dimensionality reduction and
