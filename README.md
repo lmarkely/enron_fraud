@@ -35,7 +35,7 @@ Furthermore, PCA and SelectKBest are evaluated for dimensionality reduction and
 feature selection methods. In this case, SelectKBest is chosen due to better
 performance in algorithm selection. Detailed algorithm selection without PCA and
 SelectKBest can be found in 'Enron_fraud.ipynb', with SelectKBest in
-'Enron_fraud-SKB.ipynb', and with PCA in 'Enron_fraud-PCA.ipynb'. The F score
+'Enron_fraud_SKB.ipynb', and with PCA in 'Enron_fraud_PCA.ipynb'. The F score
 and p-value from SelectKBest suggest that only 'exercised_stock_options' and
 'bonus' are significant, while others with p-value > 0.05 and F score
 significantly lower than these two features will not be used for algorithm
@@ -49,13 +49,13 @@ selection and model selection.
 Repeated nested cross validation is used for algorithm selection (**Fig. 2**).
 Furthermore, repeated instead of unrepeated nested cross validation is used
 to minimize influence from different splitting of training, validation, and test
-sets on algorithm selection as described in [previous study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf).
+sets on algorithm selection as described in a [previous study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf).
 
 ![Plot](Fig%202.png)
 
 **Figure 2.** Schematic diagram of nested cross validation.
 
-The following algorithms from scikit-learn will be evaluated.
+The following algorithms from scikit-learn are evaluated.
 1. Logistic Regression
 2. Random Forest Classifier
 3. K-Nearest Neighbors Classifier
@@ -131,7 +131,7 @@ Total number of POI: 18
 Total number of non-POI 123
 ```
 
-This summary shows that the dataset is imbalanced, there are much less POI than
+This summary shows that the dataset is imbalanced; there are much less POI than
 non-POI. Due to this imbalance, StratifiedKFold is used to ensure similar
 distribution of POI vs non-POI in training, validation, and test sets. In
 addition, a few outliers that were removed
@@ -180,21 +180,21 @@ features are removed to minimize redundancy and correlation among features. In
 addition, email address is removed as we are interested in quantitative input
 data. Furthermore, new features, 'std_from_poi' and 'std_to_poi', are created
 by dividing received and sent email messages to poi by total received and sent
-messages. However, scores from SelectKBest suggest that the above two features
-are the signficant features using p-value < 0.05 cutoff.
+messages.
 
 Feature scaling was used because each feature has different value ranges. Without
 scaling, features with high value and/or variance may dominate over features
 with low value and/or variance. For SelectKBest, MinMaxScaler was used for
-feature scaling. Feature scores from SelectKBest is provided in Fig. 1. Features
-with p-value were selected for algorithm and model selection. The figure also
-shows that the new engineered features 'std_from_poi' and 'std_to_poi' have
-significantly lower F Score (1.7 and 1.2) than the top two features (6.7 and 5.0).
-Moreover, the p-value of these engineered features are very high at 0.19 and 0.27,
-suggesting that these features are not significant in the classification.
-Decision Tree was not used as it is prone to overfitting. Instead,
-Random Forest, which is a bagging version of Decision Tree ([ref](https://sebastianraschka.com/faq/docs/bagging-boosting-rf.html)) was
-used in an attempt to avoid overfitting.
+feature scaling. Feature scores from SelectKBest is also provided in **Fig.1**.
+Features with p-value < 0.05 were selected for algorithm and model selection.
+The figure also shows that the new engineered features 'std_from_poi' and
+'std_to_poi' have significantly lower F Score (1.7 and 1.2) than the top two
+features (6.7 and 5.0). Moreover, the p-value of these engineered features are
+very high at 0.19 and 0.27, suggesting that these features may not be
+significant in the classification. Decision Tree was not used as it is prone to
+overfitting. Instead,Random Forest, which is a bagging version of Decision Tree ([ref](https://sebastianraschka.com/faq/docs/bagging-boosting-rf.html)) and
+AdaBoostClassifier with Decision Tree as the base classifier, a boosting version of
+Decision Tree were used in an attempt to avoid overfitting.
 
 **Q:** What algorithm did you end up using? What other one(s) did you try?
 How did model performance differ between algorithms?
@@ -204,9 +204,9 @@ Logistic Regression, RandomForestClassifier, AdaBoostClassifier, Linear SVC, Ker
 SVC, MLPClassifier, and GaussianNB. KNN Classifier has the highest F1 score,
 precision, and recall among all algorithms evaluated. There is no clear pattern
 among different algorithm performance. One interesting observation is that
-implementing SelectKBest significantly improve the performance of most of the
-algorithm, except Logistic Regression and Linear SVC. The performance of KNN
-was significantly improved by SelectKBest.
+implementing SelectKBest significantly improves the performance of most of the
+algorithms, except Logistic Regression and Linear SVC. The performance of KNN
+is significantly improved by SelectKBest.
 
 **Q:** What does it mean to tune the parameters of an algorithm, and what can
 happen if you don’t do this well?  How did you tune the parameters of your
@@ -219,7 +219,7 @@ tuning, e.g. a decision tree classifier).
 **A:** The parameters tuned in this project are regularization parameters. These
 parameters control the complexity of the algorithm. If we do not tune it well,
 the algorithm may suffer from high bias (underfitting) or high variance
-(overfitting). The parameters were tuned using nested cross
+(overfitting). The parameters were tuned using repeated nested cross
 validation, in which the data set are split into training, validation, and test
 set. Training and validation sets are used by GridSearchCV to obtain the best
 parameters, and test set is used to test the generalization of the algorithm.
@@ -246,11 +246,11 @@ of them.  Explain an interpretation of your metrics that says something
 human-understandable about your algorithm’s performance.
 
 **A:** F1 score, precision, and recall are used as the metrics. The average
-performance for F1 score is 0.33, precision is 0.34, and recall is 0.38. Recall
-of 0.38 means that given a group of suspects being evaluated,
-the algorithm can correctly predict 0.38 of the total number of suspects who are
-indeed POI (Person of Interest). Precision of 0.34 means that from all the
-suspects that the algorithm predicts as POI, 0.34 of those people are indeed
+performance for F1 score is 0.41, precision is 0.65, and recall is 0.36. Recall
+of 0.36 means that given a group of suspects being evaluated,
+the algorithm can correctly predict 0.36 of the total number of suspects who are
+indeed POI (Person of Interest). Precision of 0.65 means that from all the
+suspects that the algorithm predicts as POI, 0.65 of those people are indeed
 POI. Algorithms that have high precision may tend to have low recall and vice
 versa. To balance these two metrics, we can use F1 score, which is a harmonic
 mean of these two metrics.
