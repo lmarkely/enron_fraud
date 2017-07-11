@@ -197,7 +197,7 @@ messages.
 
 Feature scaling was used because each feature has different value ranges. Without
 scaling, features with high values and/or variances may dominate over features
-with low value and/or variance. For SelectKBest, MinMaxScaler was used for
+with low values and/or variances. For SelectKBest, MinMaxScaler was used for
 feature scaling. Feature scores from SelectKBest is also provided in **Fig. 1**.
 Features with p-value < 0.05 were selected for algorithm and model selection.
 The figure also shows that the new engineered features 'std_from_poi' and
