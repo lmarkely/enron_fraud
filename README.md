@@ -89,18 +89,26 @@ SelectKBest.
 
 ## Model Selection
 
-The results of the hyperparameter C tuning is presented in **Table 1**.The first column corresponds to the best C values selected in 1000 permutations of data splitting. The second column corresponds to the number of times each C value was
-selected as the best hyperparameter value. The third column, corresponds to the
-mean of either F1 score, precision, or recall when the corresponding C value was
-chosen. Similary, the other columns correspond to the standard deviation,
-minimum, 25% quantile, 50% quantile, 75% quantile, and maximum of the metrics
-scores when the corresponding C value was chosen. This summary shows
-that C = 0.0001 gives the best F1 score and recall. Although, this
-hyperparameter value does not give the best precision, the mean of precision is
-above 0.3 and it is selected as the best parameters in significant number of
-permutations of data splitting.
+The hyperparameter of KNN Classifier is the number of neighbors. This parameter
+is tuned in the model selection (**Table 1**).
+The first column corresponds to the best number of neighbors selected in 1000
+permutations of data splitting. The second column corresponds to the number of
+times each N value was selected as the best value. The third column corresponds
+to the mean of either F1 score, precision, or recall when the corresponding N
+value was chosen. Similary, the other columns correspond to the standard
+deviation, minimum, 25% quantile, 50% quantile, 75% quantile, and maximum of the
+metrics scores when the corresponding N value was chosen. This summary shows
+that N = 5 gives the optimum combination of F1 score (0.41), precision (0.65),
+and recall (0.36).
 
-**Table 1.** Summary of
+**Table 1.** Summary of KNN Classifier model selection.
+![Plot](Table%201.png)
+
+## Comparison with Dummy Classifier
+To assess how significant these results are, the performance is compared with
+Dummy Classifier with 'uniform' strategy from sklearn. The Dummy Classifier has
+overall F1 score, precision, and recall around 0.16 - 0.27. So, the performance
+of the KNN is significantly better than random guessing.
 
 ## Udacity Project Questions
 **Q:** Summarize for us the goal of this project and how machine learning is useful
