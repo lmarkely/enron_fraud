@@ -113,7 +113,7 @@ value was chosen. Similary, the other columns correspond to the standard
 deviation, minimum, 25% quantile, 50% quantile, 75% quantile, and maximum of the
 metrics scores when the corresponding N value was chosen. This summary shows
 that N = 5 gives the optimum combination of F1 score (0.41), precision (0.65),
-and recall (0.36).
+and recall (0.36). 
 
 **Table 1.** Summary of KNN Classifier model selection.
 ![Plot](Table%201.png)
@@ -122,7 +122,15 @@ and recall (0.36).
 To assess how significant these results are, the performance is compared with
 Dummy Classifier with 'uniform' strategy from sklearn. The Dummy Classifier has
 overall F1 score, precision, and recall around 0.16 - 0.27. So, the performance
-of the KNN is significantly better than random guessing.
+of the KNN is significantly better than random guessing. 
+
+## Final test
+The output from tester.py for final evaluation of the model
+is below.
+
+![Plot](tester.py%20output.png)
+**Figure 7.** Output from tester.py shows the F1 score, precision, and recall of 
+the classifier.
 
 ## Udacity Project Questions
 **Q:** Summarize for us the goal of this project and how machine learning is useful
