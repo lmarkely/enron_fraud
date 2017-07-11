@@ -28,6 +28,7 @@ with open("final_project_dataset.pkl", "r") as data_file:
 # to/from poi by the total sent or received messages, respectively.
 data_dict.pop('TOTAL')
 data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
+data_dict.pop('LOCKHART EUGENE E')
 missing_data = 0
 feature_zeros = {}
 for key in data_dict:

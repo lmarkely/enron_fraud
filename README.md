@@ -40,23 +40,30 @@ performance in algorithm selection. Detailed algorithm selection without PCA and
 SelectKBest can be found in 'Enron_fraud.ipynb', with SelectKBest in
 'Enron_fraud_SKB.ipynb', and with PCA in 'Enron_fraud_PCA.ipynb'. The F score
 and p-value from SelectKBest suggest that only 'exercised_stock_options' and
-'bonus' are significant, while others with p-value > 0.05 and F score
-significantly lower than these two features will not be used for algorithm
-selection and model selection.
+'bonus' are significant (**Fig. 1**).
+Furthermore, varying k affects the F1 score, precision,
+and recall (**Fig. 2**), and the maximum scores are achieved at k = 2. Here, the scores are the mean of scores obtained from repeated nested cross validation, as described below, for K-Nearest Neighbors
+Classifier in algorithm selection. K-Nearest Neighbors
+Classifier is the classifier chosen for this project (details are provided below). Thus, only the first two features will be used for algorithm selection and model selection.
 
 ![Plot](Fig%201.png)
 
 **Figure 1.** F score and p-value from SelectKBest.
 
+![Plot](Fig%202.png)
+
+**Figure 2.** The effect of varying k value of SelectKBest on the mean F1 score,
+precision, and recall of K-Nearest Neighbors Classifier in algorithm selection using repeated nested cross validation.
+
 ## Algorithm Selection
-Repeated nested cross validation is used for algorithm selection (**Fig. 2**).
+Repeated nested cross validation is used for algorithm selection (**Fig. 3**).
 Furthermore, repeated instead of unrepeated nested cross validation is used
 to minimize influence from different splitting of training, validation, and test
 sets on algorithm selection as described in a [previous study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf).
 
-![Plot](Fig%202.png)
+![Plot](Fig%203.png)
 
-**Figure 2.** Schematic diagram of nested cross validation.
+**Figure 3.** Schematic diagram of nested cross validation.
 
 The following algorithms from scikit-learn are evaluated.
 1. Logistic Regression
@@ -68,27 +75,27 @@ The following algorithms from scikit-learn are evaluated.
 7. Multi-Layer Perceptron Classifier
 8. AdaBoost Classifier
 
-**Figs. 3-5** summarize the F1 score, precision, and recall of all algorithms.
+**Figs. 4-6** summarize the F1 score, precision, and recall of all algorithms.
 There are 3 types of pipelines evaluated. The first includes StandardScaler and
-the classifier (**Fig. 3**). The second includes StandardScaler, PCA, and the
-classifier (**Fig. 4**). The third includes MinMaxScaler, SelectKBest, and the
-clasifier. Overall, KNN Classifier with the third pipeline has the best average
+the classifier (**Fig. 4**). The second includes StandardScaler, PCA, and the
+classifier (**Fig. 5**). The third includes MinMaxScaler, SelectKBest, and the
+clasifier (**Fig. 6**). Overall, KNN Classifier with the third pipeline has the best average
 F1 score (0.35), precision (0.43), and recall (0.4) in the repeated nested
 cross validation.
 
-![Plot](Fig%203.png)
-
-**Figure 3.** F1 score, precision, and recall in algorithm selection without
-PCA or SelectKBest.
-
 ![Plot](Fig%204.png)
 
-**Figure 4.** F1 score, precision, and recall in algorithm selection with
-PCA.
+**Figure 4.** F1 score, precision, and recall in algorithm selection without
+PCA or SelectKBest.
 
 ![Plot](Fig%205.png)
 
 **Figure 5.** F1 score, precision, and recall in algorithm selection with
+PCA.
+
+![Plot](Fig%206.png)
+
+**Figure 6.** F1 score, precision, and recall in algorithm selection with
 SelectKBest.
 
 ## Model Selection
@@ -219,10 +226,11 @@ picked, identify and briefly explain how you would have done it for the model
 that was not your final choice or a different model that does utilize parameter
 tuning, e.g. a decision tree classifier).
 
-**A:** The parameters tuned in this project are regularization parameters. These
-parameters control the complexity of the algorithm. If we do not tune it well,
-the algorithm may suffer from high bias (underfitting) or high variance
-(overfitting). The parameters were tuned using repeated nested cross
+**A:** The parameters tuned in this project are regularization parameters. Here, tuning parameters means that we adjust the parameter values in order to maximize the predictive performance of the algorithm on the training data set. As hyperparameters control the complexity of the algorithm, it is possible to
+overtune them such that the model is overfitting. Similarly, it is possible to
+undertune them such that the model is underfitting. A classical mistake is to
+tune the parameters on the whole dataset (training and test set), which results
+in overfitting. The parameters were tuned using repeated nested cross
 validation, in which the data set are split into training, validation, and test
 set. Training and validation sets are used by GridSearchCV to obtain the best
 parameters, and test set is used to test the generalization of the algorithm.
@@ -232,17 +240,16 @@ test sets.
 **Q:** What is validation, and what’s a classic mistake you can make if you do
 it wrong? How did you validate your analysis?
 
-**A:** In cross validation, we split the dataset into test set and training set.
-The model is trained on the training set and then tested on test set. This
-splitting is done so that the model never sees the test set while training. It
+**A:** In cross validation, we split the dataset into test set and training set, and repeat this process over multiple combinations of data set splitting as
+defined by the argument 'cv'. This
+splitting is done so that the model never sees the test set while training.
+In each iteration, the model is trained on the training set.  To validate the
+results from the training, the model is tested on the test set. It
 is critical that there is no leaking of information from the test set to the
 training of the model. Otherwise, we will have an overfitting model. The classic
 mistake is to train and test the model on the same set of data. We may get high
 performance score, but poor performance score when we use the model on a
-completely new dataset. This is an example of overfitting problem. To validate
-our analysis, we use metrics, such as accuracy, F1
-score, precision, recall, etc to obtain quantitative assessment on the
-algorithm performance.
+completely new dataset. This is an example of overfitting problem.
 
 **Q:** Give at least 2 evaluation metrics and your average performance for each
 of them.  Explain an interpretation of your metrics that says something

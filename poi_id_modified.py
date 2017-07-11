@@ -32,6 +32,7 @@ with open("final_project_dataset.pkl", "r") as data_file:
 # to/from poi by the total sent or received messages, respectively.
 data_dict.pop('TOTAL')
 data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
+data_dict.pop('LOCKHART EUGENE E')
 for key in data_dict:
     if (type(data_dict[key]['from_poi_to_this_person']) == int and
         type(data_dict[key]['from_messages']) == int):
