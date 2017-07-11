@@ -64,7 +64,13 @@ The following algorithms from scikit-learn will be evaluated.
 7. Multi-Layer Perceptron Classifier
 8. AdaBoost Classifier
 
-
+**Figs. 3-5** summarize the F1 score, precision, and recall of all algorithms.
+There are 3 types of pipelines evaluated. The first includes StandardScaler and
+the classifier (**Fig. 3**). The second includes StandardScaler, PCA, and the
+classifier (**Fig. 4**). The third includes MinMaxScaler, SelectKBest, and the
+clasifier. Overall, KNN Classifier with the third pipeline has the best average
+F1 score (0.35), precision (0.43), and recall (0.4) in the repeated nested
+cross validation. 
 
 ## Model Selection
 
