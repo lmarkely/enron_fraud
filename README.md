@@ -130,9 +130,6 @@ is below.
 
 ![Plot](tester.py%20output.png)
 
-**Figure 7.** Output from tester.py shows the F1 score, precision, and recall of 
-the classifier.
-
 ## Udacity Project Questions
 **Q:** Summarize for us the goal of this project and how machine learning is useful
 in trying to accomplish it. As part of your answer, give some background on the
