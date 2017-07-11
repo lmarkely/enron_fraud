@@ -198,9 +198,10 @@ messages.
 Feature scaling was used because each feature has different value ranges. Without
 scaling, features with high values and/or variances may dominate over features
 with low values and/or variances. For SelectKBest, MinMaxScaler was used for
-feature scaling. Feature scores from SelectKBest is also provided in **Fig. 1**.
-Features with p-value < 0.05 were selected for algorithm and model selection.
-The figure also shows that the new engineered features 'std_from_poi' and
+feature scaling. Feature scores from SelectKBest are provided in **Fig. 1**.
+The figure shows two features with p-value < 0.05 and F scores significantly higher
+than other features. These features were later selected for algorithm and model selection.
+In addition. the new engineered features 'std_from_poi' and
 'std_to_poi' have significantly lower F Score (1.7 and 1.2) than the top two
 features (6.7 and 5.0). Moreover, the p-value of these engineered features are
 very high at 0.19 and 0.27, suggesting that these features may not be
@@ -242,7 +243,7 @@ undertune them such that the model is underfitting. A classical mistake is to
 tune the parameters on the whole dataset (training and test set), which results
 in overfitting. The parameters were tuned using repeated nested cross
 validation, in which the data set are split into training, validation, and test
-set. Training and validation sets are used by GridSearchCV to obtain the best
+sets. Training and validation sets are used by GridSearchCV to obtain the best
 parameters, and test set is used to test the generalization of the algorithm.
 This tuning is iterated over different splitting of training, validation, and
 test sets.
@@ -257,13 +258,13 @@ sees the test set while training. In this project, StratifiedKFold with shufflin
 is used in all the cross validation. The reason for using this method is because 
 the data set is imbalanced - the number of non-POI is ~7 x the number of POI. Using
 StratifiedKFold maintains the same ratio of POI to non-POI in training and test set.
-Without using stratification, we may end up having no POI data in the training set.
-Furthermore, shuffling is recommended for small data set.
-In each iteration of the cross validation, the model is trained on 
-the training set.  To validate the results from the training, the model is then tested 
+Without using stratification, we may end up having no POI data in the training set,
+another classic mistake. Furthermore, shuffling is recommended for small data set such
+as the one in this project. In each iteration of the cross validation, the model is trained on 
+the training set. To validate the results from the training, the model is then tested 
 on the test set. It is critical that there is no leaking of information from the 
 test set to the training of the model. Otherwise, we will have an overfitting model. 
-The classic mistake is to train and test the model on the whole set of data. We may get high
+Another classic mistake is to train and test the model on the whole set of data. We may get high
 performance score, but poor performance score when we use the model on a
 completely new dataset. This is an example of overfitting problem.
 
@@ -294,7 +295,8 @@ reference for implementing machine learning algorithms.
 reference for implementing Seaborn.
 * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3994246/pdf/1758-2946-6-10.pdf:
 reference for repeated nested cross validation and repeated cross validation.
-* (https://en.wikipedia.org/wiki/Enron_scandal): reference for Enron scandal.
+* https://en.wikipedia.org/wiki/Enron_scandal: reference for Enron scandal.
+* https://www.flickr.com/photos/23094783@N03: reference for Enron picture.
 
 **“I hereby confirm that this submission is my work.
 I have cited above the origins of any parts of the submission that were taken
@@ -305,5 +307,5 @@ from Websites, books, forums, blog posts, github repositories, etc."**
 my_feature_list.pkl, as well as the answers to the questions listed in the
 following section.
 * The Jupyter notebooks provide the codes for all the steps described in details
-above.
+above. The codes for the path using SelectKBest are also provided in poi_id_modified.py.
 * Environment file: enron_fraud.yaml
