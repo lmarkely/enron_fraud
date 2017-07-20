@@ -41,7 +41,7 @@ SelectKBest can be found in 'Enron_fraud.ipynb', with SelectKBest in
 'Enron_fraud_SKB.ipynb', and with PCA in 'Enron_fraud_PCA.ipynb'. The F score
 and p-value from SelectKBest suggest that only 'exercised_stock_options' and
 'bonus' are significant (**Fig. 1**). In later stages of this project, this 
-selection of k value is further evaluated by aanlyzing the effect of varying k 
+selection of k value is further evaluated by analyzing the effect of varying k 
 values on F1 score, precision, and recall (**Fig. 2**), and the maximum scores 
 are achieved at k = 2. Here, the scores are the mean of scores obtained from 
 repeated nested cross validation, as described below, for K-Nearest Neighbors
