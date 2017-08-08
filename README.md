@@ -40,13 +40,13 @@ performance in algorithm selection. Detailed algorithm selection without PCA and
 SelectKBest can be found in 'Enron_fraud.ipynb', with SelectKBest in
 'Enron_fraud_SKB.ipynb', and with PCA in 'Enron_fraud_PCA.ipynb'. The F score
 and p-value from SelectKBest suggest that only 'exercised_stock_options' and
-'bonus' are significant (**Fig. 1**). In later stages of this project, this 
-selection of k value is further evaluated by aanlyzing the effect of varying k 
-values on F1 score, precision, and recall (**Fig. 2**), and the maximum scores 
-are achieved at k = 2. Here, the scores are the mean of scores obtained from 
+'bonus' are significant (**Fig. 1**). In later stages of this project, this
+selection of k value is further evaluated by aanlyzing the effect of varying k
+values on F1 score, precision, and recall (**Fig. 2**), and the maximum scores
+are achieved at k = 2. Here, the scores are the mean of scores obtained from
 repeated nested cross validation, as described below, for K-Nearest Neighbors
 Classifier in algorithm selection. K-Nearest Neighbors
-Classifier is the classifier chosen for this project (details are provided below). 
+Classifier is the classifier chosen for this project (details are provided below).
 In summary, only the first two features are used for algorithm selection and model selection.
 
 ![Plot](Fig%201.png)
@@ -113,7 +113,7 @@ value was chosen. Similary, the other columns correspond to the standard
 deviation, minimum, 25% quantile, 50% quantile, 75% quantile, and maximum of the
 metrics scores when the corresponding N value was chosen. This summary shows
 that N = 5 gives the optimum combination of F1 score (0.41), precision (0.65),
-and recall (0.36). 
+and recall (0.36).
 
 **Table 1.** Summary of KNN Classifier model selection.
 ![Plot](Table%201.png)
@@ -122,7 +122,7 @@ and recall (0.36).
 To assess how significant these results are, the performance is compared with
 Dummy Classifier with 'uniform' strategy from sklearn. The Dummy Classifier has
 overall F1 score, precision, and recall around 0.16 - 0.27. So, the performance
-of the KNN is significantly better than random guessing. 
+of the KNN is significantly better than random guessing.
 
 ## Final test
 The output from tester.py for final evaluation of the model
@@ -212,10 +212,10 @@ In addition. the new engineered features 'std_from_poi' and
 features (6.7 and 5.0). Moreover, the p-value of these engineered features are
 very high at 0.19 and 0.27, suggesting that these features may not be
 significant in the classification. The choice of k = 2 was further evaluated later
-in the project by analyzing the effect of varying k value on F1 score, precision, 
+in the project by analyzing the effect of varying k value on F1 score, precision,
 and recall (**Fig. 2**), in which k = 2 gave the highest scores.
-Decision Tree was not used as it is prone to overfitting. Instead, Random Forest, 
-which is a bagging version of 
+Decision Tree was not used as it is prone to overfitting. Instead, Random Forest,
+which is a bagging version of
 Decision Tree ([ref](https://sebastianraschka.com/faq/docs/bagging-boosting-rf.html)) and
 AdaBoostClassifier with Decision Tree as the base classifier, a boosting version of
 Decision Tree were used in an attempt to avoid overfitting.
@@ -229,8 +229,8 @@ SVC, MLPClassifier, and GaussianNB. KNN Classifier has the highest F1 score,
 precision, and recall among all algorithms evaluated. There is no clear pattern
 among different algorithm performance. One interesting observation is that
 implementing SelectKBest significantly improves the performance of most of the
-algorithms, except Logistic Regression and Linear SVC. The performance of KNN
-is significantly improved by SelectKBest.
+algorithms, except Logistic Regression, Random Forest Classifier,
+and Linear SVC. The performance of KNN is significantly improved by SelectKBest.
 
 **Q:** What does it mean to tune the parameters of an algorithm, and what can
 happen if you don’t do this well?  How did you tune the parameters of your
@@ -240,9 +240,9 @@ picked, identify and briefly explain how you would have done it for the model
 that was not your final choice or a different model that does utilize parameter
 tuning, e.g. a decision tree classifier).
 
-**A:** The parameters tuned in this project are regularization parameters. Here, 
-tuning parameters means that we adjust the parameter values in order to maximize 
-the predictive performance of the algorithm on the training data set. As 
+**A:** The parameters tuned in this project are regularization parameters. Here,
+tuning parameters means that we adjust the parameter values in order to maximize
+the predictive performance of the algorithm on the training data set. As
 hyperparameters control the complexity of the algorithm, it is possible to
 overtune them such that the model is overfitting. Similarly, it is possible to
 undertune them such that the model is underfitting. A classical mistake is to
@@ -257,22 +257,22 @@ test sets.
 **Q:** What is validation, and what’s a classic mistake you can make if you do
 it wrong? How did you validate your analysis?
 
-**A:** In cross validation, we split the dataset into test set and training set, 
+**A:** In cross validation, we split the dataset into test set and training set,
 and repeat this process over a number of combinations of data set splitting as
-defined by the argument 'cv'. This splitting is done so that the model never 
+defined by the argument 'cv'. This splitting is done so that the model never
 sees the test set while training. In this project, StratifiedKFold with shuffling
-is used in all the cross validation. The reason for using this method is because 
+is used in all the cross validation. The reason for using this method is because
 the data set is imbalanced - the number of non-POI is ~7 x the number of POI. Using
 StratifiedKFold maintains the same ratio of POI to non-POI in training and test set.
 Without using stratification, we may end up having no POI data in the training set,
 another classic mistake. Furthermore, shuffling is recommended for small data set such
-as the one in this project. In each iteration of the cross validation, the model is trained on 
-the training set. To validate the results from the training, the model is then tested 
-on the test set. It is critical that there is no leaking of information from the 
-test set to the training of the model. Otherwise, we will have an overfitting model. 
+as the one in this project. In each iteration of the cross validation, the model is trained on
+the training set. To validate the results from the training, the model is then tested
+on the test set. It is critical that there is no leaking of information from the
+test set to the training of the model. Otherwise, we will have an overfitting model.
 Another classic mistake is to train and test the model on the whole set of data. We may get high
-performance score, but poor performance score when we use the model on a
-completely new dataset. This is an example of overfitting problem.
+performance score in the training, but poor performance score when we use the 
+model on a completely new dataset. This is an example of overfitting problem.
 
 **Q:** Give at least 2 evaluation metrics and your average performance for each
 of them.  Explain an interpretation of your metrics that says something
