@@ -41,7 +41,7 @@ SelectKBest can be found in 'Enron_fraud.ipynb', with SelectKBest in
 'Enron_fraud_SKB.ipynb', and with PCA in 'Enron_fraud_PCA.ipynb'. The F score
 and p-value from SelectKBest suggest that only 'exercised_stock_options' and
 'bonus' are significant (**Fig. 1**). In later stages of this project, this
-selection of k value is further evaluated by aanlyzing the effect of varying k
+selection of k value is further evaluated by analyzing the effect of varying k
 values on F1 score, precision, and recall (**Fig. 2**), and the maximum scores
 are achieved at k = 2. Here, the scores are the mean of scores obtained from
 repeated nested cross validation, as described below, for K-Nearest Neighbors
@@ -271,7 +271,7 @@ the training set. To validate the results from the training, the model is then t
 on the test set. It is critical that there is no leaking of information from the
 test set to the training of the model. Otherwise, we will have an overfitting model.
 Another classic mistake is to train and test the model on the whole set of data. We may get high
-performance score in the training, but poor performance score when we use the 
+performance score in the training, but poor performance score when we use the
 model on a completely new dataset. This is an example of overfitting problem.
 
 **Q:** Give at least 2 evaluation metrics and your average performance for each
