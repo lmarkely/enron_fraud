@@ -83,7 +83,7 @@ There are 3 types of pipelines evaluated. The first includes StandardScaler and
 the classifier (**Fig. 4**). The second includes StandardScaler, PCA, and the
 classifier (**Fig. 5**). The third includes MinMaxScaler, SelectKBest, and the
 classifier (**Fig. 6**). Overall, KNN Classifier with the third pipeline has the best average
-F1 score (0.35), precision (0.43), and recall (0.4) in the repeated nested
+F1 score (0.33), precision (0.50), and recall (0.34) in the repeated nested
 cross validation.
 
 ![Plot](Fig%204.png)
