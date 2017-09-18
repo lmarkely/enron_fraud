@@ -207,7 +207,7 @@ with low values and/or variances. For SelectKBest, MinMaxScaler was used for
 feature scaling. Feature scores from SelectKBest are provided in **Fig. 1**.
 The figure shows two features with p-value < 0.05 and F scores significantly higher
 than other features. These features were later selected for algorithm and model selection.
-In addition. the new engineered features 'std_from_poi' and
+In addition, the new engineered features 'std_from_poi' and
 'std_to_poi' have significantly lower F Score (1.7 and 1.2) than the top two
 features (6.7 and 5.0). Moreover, the p-value of these engineered features are
 very high at 0.19 and 0.27, suggesting that these features may not be
@@ -228,9 +228,7 @@ Logistic Regression, RandomForestClassifier, AdaBoostClassifier, Linear SVC, Ker
 SVC, MLPClassifier, and GaussianNB. KNN Classifier has the highest F1 score,
 precision, and recall among all algorithms evaluated. There is no clear pattern
 among different algorithm performance. One interesting observation is that
-implementing SelectKBest significantly improves the performance of most of the
-algorithms, except Logistic Regression, Random Forest Classifier,
-and Linear SVC. The performance of KNN is significantly improved by SelectKBest.
+implementing SelectKBest significantly improves the performance of KNN.
 
 **Q:** What does it mean to tune the parameters of an algorithm, and what can
 happen if you don’t do this well?  How did you tune the parameters of your
